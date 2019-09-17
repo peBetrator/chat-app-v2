@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import "./Form.css";
 
 import Message from "../messages/Message";
@@ -13,15 +14,16 @@ class Form extends Component {
       list: []
     };
 
-    this.messageRef = firebase.database().ref();
+    this.messageRef = firebase.database().ref("rooms/global");
 
     this.listenMessages();
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.user && this.props.user !== prevProps.user) {
-      this.setState({ userName: prevProps.user.displayName });
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.user && prevState.userName !== nextProps.user.displayName) {
+      return { userName: nextProps.user.displayName };
     }
+    return null;
   }
 
   handleChange(event) {
