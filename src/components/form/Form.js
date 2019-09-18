@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import "./Form.css";
+import "./form.css";
 
-import Message from "../messages/Message";
+import Message from "../messages/message";
 import firebase from "firebase";
 
 class Form extends Component {
@@ -11,11 +11,11 @@ class Form extends Component {
     this.state = {
       userName: "",
       message: "",
-      list: []
+      list: [],
+      room: this.props.room
     };
 
-    this.messageRef = firebase.database().ref("rooms/global");
-
+    this.messageRef = firebase.database().ref("rooms/" + this.state.room);
     this.listenMessages();
   }
 
@@ -26,11 +26,21 @@ class Form extends Component {
     return null;
   }
 
-  handleChange(event) {
-    this.setState({ message: event.target.value });
+  componentDidUpdate(prevProps) {
+    if (prevProps.room !== this.props.room) {
+      this.setState({
+        room: this.props.room
+      });
+      this.messageRef = firebase.database().ref("rooms/" + this.props.room);
+      this.listenMessages();
+    }
   }
 
-  handleSend() {
+  handleChange = event => {
+    this.setState({ message: event.target.value });
+  };
+
+  handleSend = () => {
     if (this.state.message) {
       var newItem = {
         userName: this.state.userName,
@@ -39,11 +49,11 @@ class Form extends Component {
       this.messageRef.push(newItem);
       this.setState({ message: "" });
     }
-  }
+  };
 
-  handleKeyPress(event) {
+  handleKeyPress = event => {
     if (event.key === "Enter") this.handleSend();
-  }
+  };
 
   listenMessages() {
     this.messageRef.limitToLast(10).on("value", message => {
@@ -73,10 +83,10 @@ class Form extends Component {
             type="text"
             placeholder="Type message"
             value={this.state.message}
-            onChange={this.handleChange.bind(this)}
-            onKeyPress={this.handleKeyPress.bind(this)}
+            onChange={this.handleChange}
+            onKeyPress={this.handleKeyPress}
           />
-          <button className="form__button" onClick={this.handleSend.bind(this)}>
+          <button className="form__button" onClick={this.handleSend}>
             send
           </button>
         </div>
