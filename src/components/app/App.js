@@ -1,65 +1,82 @@
-import React, { Component } from "react";
-import firebase from "firebase";
-import firebaseConfig from "../../config";
-
-import Form from "../form/form.js";
-import Channels from "../channels/channels.js";
-
+import React from "react";
 import "./app.css";
 
-firebase.initializeApp(firebaseConfig);
+import { Route, Switch } from "react-router-dom";
+import { connect } from "react-redux";
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: null,
-      room: "global"
-    };
-  }
+import ProtectedRoute from "../protected_route";
+import Login from "../pages/login-page";
+import Chat from "../pages/chat-page";
+import Header from '../header/app-header'
 
-  componentDidMount() {
-    firebase.auth().onAuthStateChanged(user => {
-      this.setState({ user });
-    });
-  }
-
-  handleSignIn = () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider);
-  };
-
-  handleLogOut = () => {
-    firebase.auth().signOut();
-  };
-
-  handleRoomChange = room => {
-    this.setState({
-      room
-    });
-  };
-
-  render() {
-    // TODO divide to components
-    return (
-      <div className="app">
-        <div className="app__header">
-          {!this.state.user ? (
-            <button className="app__button" onClick={this.handleSignIn}>
-              Sign in
-            </button>
-          ) : (
-            <button className="app__button" onClick={this.handleLogOut}>
-              Logout
-            </button>
-          )}
-          <Channels onSelectRoom={this.handleRoomChange} />
-        </div>
-        <div className="app__list">
-          <Form user={this.state.user} room={this.state.room} />
-        </div>
-      </div>
-    );
-  }
+function App(props) {
+  const { isAuthenticated, isVerifying } = props;
+  return (
+    <div className="app">
+      <Header />
+      <Switch>
+        <ProtectedRoute
+          exact
+          path="/"
+          component={Chat}
+          isAuthenticated={isAuthenticated}
+          isVerifying={isVerifying}
+        />
+        <Route path="/login" component={Login} />
+      </Switch>
+    </div>
+  );
 }
-export default App;
+
+function mapStateToProps(state) {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+    isVerifying: state.auth.isVerifying
+  };
+}
+
+export default connect(mapStateToProps)(App);
+
+// class App extends Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       user: null,
+//       room: "global"
+//     };
+//   }
+
+//   // componentDidMount() {
+//   //   firebase.auth().onAuthStateChanged(user => {
+//   //     this.setState({ user });
+//   //   });
+//   // }
+
+//   // handleSignIn = () => {
+//   //   const provider = new firebase.auth.GoogleAuthProvider();
+//   //   firebase.auth().signInWithPopup(provider);
+//   // };
+
+//   // handleLogOut = () => {
+//   //   firebase.auth().signOut();
+//   // };
+
+//   handleRoomChange = room => {
+//     this.setState({
+//       room
+//     });
+//   };
+
+//   render() {
+//     // TODO divide to components
+//     return (
+//       <Switch>
+//         <div className="app">
+//           <Header />
+//           <Chat user={this.state.user} room={this.state.room} />
+//         </div>
+//       </Switch>
+//     );
+//   }
+// }
+// export default App;

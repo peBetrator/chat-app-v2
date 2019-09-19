@@ -1,0 +1,22 @@
+.app__header {
+  background-color: rgba(28, 18, 167, 0.836);
+  padding: 20px;
+  color: white;
+  display: flex;
+}
+
+.app__button {
+  float: right;
+  border: 0;
+  border-radius: 3px;
+  padding: 10px 20px;
+  color: black;
+  background-color: white;
+  cursor: pointer;
+  opacity: 0.8;
+  outline: 0;
+}
+
+.app__button:hover {
+  opacity: 1;
+}

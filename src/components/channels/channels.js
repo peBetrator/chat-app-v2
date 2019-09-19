@@ -1,9 +1,11 @@
 // TODO convert component to function
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { getRooms } from "../../actions";
+
+import { changeRoom } from "../../actions";
 
 import "./channels.css";
-
-import firebase from "firebase";
 
 class Channels extends Component {
   constructor(props) {
@@ -11,27 +13,25 @@ class Channels extends Component {
     this.state = {
       list: []
     };
-    this.channelsRef = firebase.database().ref("rooms");
+    // this.channelsRef = firebase.database().ref("rooms");
     this.listenRooms();
   }
 
   listenRooms() {
-    this.channelsRef.on("child_added", courseSnapshot => {
-      this.setState({
-        list: [...this.state.list, courseSnapshot.key]
-      });
-    });
+    const { dispatch } = this.props;
+    dispatch(getRooms());
   }
 
-  handleChannelChange = e => {
-    this.props.onSelectRoom(e.currentTarget.getAttribute('value'));
-  };
+  // handleChannelChange = e => {
+  //   this.props.onSelectRoom(e.currentTarget.getAttribute('value'));
+  // };
 
   render() {
+    const { rooms } = this.props;
     return (
       <ul id="ul_top_hypers">
-        {this.state.list.map((room, i) => (
-          <li key={i} value={room} onClick={e => this.handleChannelChange(e)}>
+        {rooms.map((room, i) => (
+          <li key={i} value={room}>
             {room}
           </li>
         ))}
@@ -40,4 +40,14 @@ class Channels extends Component {
   }
 }
 
-export default Channels;
+const mapStateToProps = state => {
+  return {
+    rooms: state.messaging.rooms
+  };
+};
+
+// const mapDispatchToProps = {
+//   handleRoomChange: changeRoom
+// };
+
+export default connect(mapStateToProps)(Channels);
