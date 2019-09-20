@@ -1,22 +1,25 @@
-import { myFirebase } from "../firebase/firebase";
+import { myFirebase, db } from '../firebase/firebase';
+import { async } from 'q';
 
-export const FETCH_MESSAGES_REQUEST = "FETCH_MESSAGES_REQUEST";
-export const FETCH_MESSAGES_SUCCESS = "FETCH_MESSAGES_SUCCESS";
-export const FETCH_MESSAGES_FAILURE = "FETCH_MESSAGES_FAILURE";
+export const FETCH_MESSAGES_REQUEST = 'FETCH_MESSAGES_REQUEST';
+export const FETCH_MESSAGES_SUCCESS = 'FETCH_MESSAGES_SUCCESS';
+export const FETCH_MESSAGES_FAILURE = 'FETCH_MESSAGES_FAILURE';
 
-export const FETCH_ROOMS_REQUEST = "FETCH_ROOMS_REQUEST";
+export const FETCH_ROOMS_REQUEST = 'FETCH_ROOMS_REQUEST';
+export const FETCH_ROOMS_SUCCESS = 'FETCH_ROOMS_SUCCESS';
 
-export const CHANGE_ROOM_REQUEST = "CHANGE_ROOM_REQUEST";
+export const CHANGE_ROOM_REQUEST = 'CHANGE_ROOM_REQUEST';
 
-const fetchMessages = messages => {
+const fetchMessages = room => {
   return {
     type: FETCH_MESSAGES_REQUEST,
-    messages
+    room
   };
 };
-const fetchMessagesSuccess = () => {
+const fetchMessagesSuccess = messages => {
   return {
-    type: FETCH_MESSAGES_SUCCESS
+    type: FETCH_MESSAGES_SUCCESS,
+    messages
   };
 };
 const fetchMessagesError = () => {
@@ -27,8 +30,14 @@ const fetchMessagesError = () => {
 
 const fetchRooms = rooms => {
   return {
-    type: CHANGE_ROOM_REQUEST,
+    type: FETCH_ROOMS_REQUEST,
     rooms
+  };
+};
+
+const fetchRoomsSuccess = () => {
+  return {
+    type: FETCH_ROOMS_SUCCESS
   };
 };
 
@@ -39,25 +48,35 @@ const requestChangeRoom = room => {
   };
 };
 
-export const getMessages = room => dispatch => {
-  const messageRef = myFirebase.database().ref("rooms/" + room);
-  // TODO make message requesting async to handle loading
-  messageRef.limitToLast(10).on("value", message => {
-    if (message.exists()) dispatch(fetchMessages(Object.values(message.val())));
-  });
-  messageRef.off("value");
+export const getMessages = room => async dispatch => {
+  dispatch(fetchMessages(room));
+  const messageRef = myFirebase.database().ref('rooms/' + room);
+  messageRef
+    .limitToLast(10)
+    .once('value')
+    .then(message => {
+      if (message.exists())
+        dispatch(fetchMessagesSuccess(Object.values(message.val())));
+    })
+    .catch(error => dispatch(fetchMessagesError()));
+  // messageRef.off('value'); // unsubscribe
 };
 
-export const getRooms = () => dispatch => {
-  const roomsRef = myFirebase.database().ref("rooms");
+export const getRooms = () => async dispatch => {
+  const roomsRef = myFirebase.database().ref('rooms');
   const rooms = [];
-  roomsRef.on("child_added", roomSnapshot => {
+  roomsRef.on('child_added', roomSnapshot => {
     rooms.push(roomSnapshot.key);
+    if (rooms) {
+      setTimeout(() => {
+        dispatch(fetchRooms(rooms));
+        dispatch(fetchRoomsSuccess());
+      }, 1);
+    }
   });
-  dispatch(fetchRooms(rooms));
 };
 
-export const changeRoom = newRoom => dispatch => {
+export const changeRoom = newRoom => async dispatch => {
   dispatch(requestChangeRoom(newRoom));
   getMessages(newRoom);
 };

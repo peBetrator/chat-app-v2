@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { logoutUser } from "../../actions";
-import "./app-header.css";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { logoutUser } from '../../actions';
+import './app-header.css';
 
-import Channels from "../channels/channels.js";
+import Channels from '../channels/channels.js';
 
 class Header extends Component {
   handleLogOut = () => {
@@ -14,16 +14,14 @@ class Header extends Component {
   render() {
     const { isAuthenticated, isLoggingOut, logoutError } = this.props;
     return (
-      <div className="app__header">
-          {!isAuthenticated ? (
-            <button className="app__button">
-              Sign in
-            </button>
-          ) : (
-            <button className="app__button" onClick={this.handleLogOut}>
-              Logout
-            </button>
-          )}
+      <div className='app__header'>
+        {!isAuthenticated ? (
+          <button className='app__button'>Sign in</button>
+        ) : (
+          <button className='app__button' onClick={this.handleLogOut}>
+            Logout
+          </button>
+        )}
         <Channels />
       </div>
     );

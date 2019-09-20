@@ -1,12 +1,13 @@
-import React from "react";
+import React from 'react';
 
-import Form from "../form/form";
+import Form from '../form/form';
+import Channels from '../channels/channels';
 
-import "./chat.css";
+import './chat.css';
 
 function Chat() {
   return (
-    <div className="app__list">
+    <div className='app__list'>
       <Form />
     </div>
   );

@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { getMessages } from "../../actions";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { getMessages } from '../../actions';
 
-import "./form.css";
+import './form.css';
 
-import Message from "../messages/message";
+import Message from '../messages/message';
 
 class Form extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: ""
+      message: ''
     };
 
     this.listenMessages();
@@ -49,7 +49,7 @@ class Form extends Component {
   // };
 
   handleKeyPress = event => {
-    if (event.key === "Enter") this.handleSend();
+    if (event.key === 'Enter') this.handleSend();
   };
 
   listenMessages = () => {
@@ -60,22 +60,22 @@ class Form extends Component {
   render() {
     const { loaded, list } = this.props;
     return (
-       <div className="form">
-        <div className="form__message">
+      <div className='form'>
+        <div className='form__message'>
           {list.map((item, index) => (
             <Message key={index} message={item} />
           ))}
         </div>
-        <div className="form__row">
+        <div className='form__row'>
           <input
-            className="form__input"
-            type="text"
-            placeholder="Type message"
+            className='form__input'
+            type='text'
+            placeholder='Type message'
             value={this.state.message}
             onChange={this.handleChange}
             onKeyPress={this.handleKeyPress}
           />
-          <button className="form__button" onClick={this.handleSend}>
+          <button className='form__button' onClick={this.handleSend}>
             send
           </button>
         </div>

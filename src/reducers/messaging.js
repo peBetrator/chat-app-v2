@@ -3,15 +3,17 @@ import {
   FETCH_MESSAGES_SUCCESS,
   FETCH_MESSAGES_FAILURE,
   FETCH_ROOMS_REQUEST,
+  FETCH_ROOMS_SUCCESS,
   CHANGE_ROOM_REQUEST
-} from "../actions";
+} from '../actions';
 
 export default (
   state = {
-    room: "global",
+    room: 'global',
     rooms: [],
     messages: [],
-    loaded: false
+    loaded: false,
+    loadedRooms: false
   },
   action
 ) => {
@@ -19,11 +21,12 @@ export default (
     case FETCH_MESSAGES_REQUEST:
       return {
         ...state,
-        messages: action.messages
+        room: action.room
       };
     case FETCH_MESSAGES_SUCCESS:
       return {
         ...state,
+        messages: action.messages,
         loaded: true
       };
 
@@ -31,6 +34,11 @@ export default (
       return {
         ...state,
         rooms: action.rooms
+      };
+    case FETCH_ROOMS_SUCCESS:
+      return {
+        ...state,
+        loadedRooms: true
       };
     case CHANGE_ROOM_REQUEST:
       return {
