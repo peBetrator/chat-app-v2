@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Form from '../form/form';
-import Channels from '../channels/channels';
 
 import './chat.css';
 

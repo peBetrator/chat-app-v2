@@ -1,5 +1,5 @@
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
 
 const ProtectedRoute = ({
   component: Component,
@@ -17,7 +17,7 @@ const ProtectedRoute = ({
       ) : (
         <Redirect
           to={{
-            pathname: "/login",
+            pathname: '/login',
             state: { from: props.location }
           }}
         />

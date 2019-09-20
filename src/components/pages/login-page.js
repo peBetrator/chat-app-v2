@@ -1,20 +1,20 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
-import { loginUser } from "../../actions";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { loginUser } from '../../actions';
 
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Container from "@material-ui/core/Container";
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
+import Container from '@material-ui/core/Container';
 
-import "./login.css";
+import './login.css';
 
 class Login extends Component {
-  state = { email: "", password: "" };
+  state = { email: '', password: '' };
 
   handleEmailChange = ({ target }) => {
     this.setState({ email: target.value });
@@ -34,47 +34,47 @@ class Login extends Component {
   render() {
     const { loginError, isAuthenticated } = this.props;
     if (isAuthenticated) {
-      return <Redirect to="/" />;
+      return <Redirect to='/' />;
     } else {
       return (
-        <Container component="main" maxWidth="xs">
-          <Paper className="paper">
-            <Avatar className="avatar">
+        <Container component='main' maxWidth='xs'>
+          <Paper className='paper'>
+            <Avatar className='avatar'>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component='h1' variant='h5'>
               Sign in
             </Typography>
             <TextField
-              variant="outlined"
-              margin="normal"
+              variant='outlined'
+              margin='normal'
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
+              id='email'
+              label='Email Address'
+              name='email'
               onChange={this.handleEmailChange}
             />
             <TextField
-              variant="outlined"
-              margin="normal"
+              variant='outlined'
+              margin='normal'
               fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
+              name='password'
+              label='Password'
+              type='password'
+              id='password'
               onChange={this.handlePasswordChange}
             />
             {loginError && (
-              <Typography component="p" className="errorText">
+              <Typography component='p' className='errorText'>
                 Incorrect email or password.
               </Typography>
             )}
             <Button
-              type="button"
+              type='button'
               fullWidth
-              variant="contained"
-              color="primary"
-              className="submit"
+              variant='contained'
+              color='primary'
+              className='submit'
               onClick={this.handleSubmit}
             >
               Sign In

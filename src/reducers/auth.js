@@ -7,7 +7,7 @@ import {
   LOGOUT_FAILURE,
   VERIFY_REQUEST,
   VERIFY_SUCCESS
-} from "../actions/";
+} from '../actions/';
 
 export default (
   state = {
@@ -42,6 +42,7 @@ export default (
         isAuthenticated: false,
         loginError: true
       };
+
     case LOGOUT_REQUEST:
       return {
         ...state,
@@ -61,6 +62,7 @@ export default (
         isLoggingOut: false,
         logoutError: true
       };
+
     case VERIFY_REQUEST:
       return {
         ...state,
@@ -72,6 +74,7 @@ export default (
         ...state,
         isVerifying: false
       };
+
     default:
       return state;
   }

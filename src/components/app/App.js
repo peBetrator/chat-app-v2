@@ -1,28 +1,28 @@
-import React from "react";
-import "./app.css";
+import React from 'react';
+import './app.css';
 
-import { Route, Switch } from "react-router-dom";
-import { connect } from "react-redux";
+import { Route, Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-import ProtectedRoute from "../protected_route";
-import Login from "../pages/login-page";
-import Chat from "../pages/chat-page";
-import Header from '../header/app-header'
+import ProtectedRoute from '../protected_route';
+import Login from '../pages/login-page';
+import Chat from '../pages/chat-page';
+import Header from '../header/app-header';
 
 function App(props) {
   const { isAuthenticated, isVerifying } = props;
   return (
-    <div className="app">
+    <div className='app'>
       <Header />
       <Switch>
         <ProtectedRoute
           exact
-          path="/"
+          path='/'
           component={Chat}
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
         />
-        <Route path="/login" component={Login} />
+        <Route path='/login' component={Login} />
       </Switch>
     </div>
   );
