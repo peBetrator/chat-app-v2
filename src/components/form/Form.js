@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getMessages } from '../../actions';
+import { getMessages, sendMessage } from '../../actions';
 
 import './form.css';
 
@@ -23,30 +23,27 @@ class Form extends Component {
   //   return null;
   // }
 
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.room !== this.props.room) {
-  //     this.setState({
-  //       room: this.props.room
-  //     });
-  //     this.messageRef = firebase.database().ref("rooms/" + this.props.room);
-  //     this.listenMessages();
-  //   }
-  // }
+  componentDidUpdate(prevProps) {
+    if (prevProps.room !== this.props.room) {
+      this.listenMessages();
+    }
+  }
 
   handleChange = event => {
     this.setState({ message: event.target.value });
   };
 
-  // handleSend = () => {
-  //   if (this.state.message) {
-  //     var newItem = {
-  //       userName: this.state.userName,
-  //       message: this.state.message
-  //     };
-  //     this.messageRef.push(newItem);
-  //     this.setState({ message: "" });
-  //   }
-  // };
+  handleSend = () => {
+    const { dispatch, room, userName, email } = this.props;
+    const messageObject = {
+      user: userName || email,
+      message: this.state.message,
+      room
+    };
+    dispatch(sendMessage(messageObject));
+    this.setState({ message: '' });
+    this.listenMessages();
+  };
 
   handleKeyPress = event => {
     if (event.key === 'Enter') this.handleSend();
@@ -58,11 +55,11 @@ class Form extends Component {
   };
 
   render() {
-    const { loaded, list } = this.props;
+    const { loaded, messages } = this.props;
     return (
       <div className='form'>
         <div className='form__message'>
-          {list.map((item, index) => (
+          {messages.map((item, index) => (
             <Message key={index} message={item} />
           ))}
         </div>
@@ -84,11 +81,14 @@ class Form extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = ({ auth, messaging }) => {
   return {
-    room: state.messaging.room,
-    list: state.messaging.messages,
-    loaded: state.messaging.loaded
+    userName: auth.user.displayName,
+    email: auth.user.email,
+
+    room: messaging.room,
+    messages: messaging.messages,
+    loaded: messaging.loaded
   };
 };
 

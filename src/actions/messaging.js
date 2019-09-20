@@ -1,9 +1,10 @@
-import { myFirebase, db } from '../firebase/firebase';
-import { async } from 'q';
+import { myFirebase } from '../firebase/firebase';
 
 export const FETCH_MESSAGES_REQUEST = 'FETCH_MESSAGES_REQUEST';
 export const FETCH_MESSAGES_SUCCESS = 'FETCH_MESSAGES_SUCCESS';
 export const FETCH_MESSAGES_FAILURE = 'FETCH_MESSAGES_FAILURE';
+
+export const SEND_MESSAGE_REQUEST = 'SEND_MESSAGE_REQUEST';
 
 export const FETCH_ROOMS_REQUEST = 'FETCH_ROOMS_REQUEST';
 export const FETCH_ROOMS_SUCCESS = 'FETCH_ROOMS_SUCCESS';
@@ -28,13 +29,19 @@ const fetchMessagesError = () => {
   };
 };
 
+const sendMessageRequest = message => {
+  return {
+    type: SEND_MESSAGE_REQUEST,
+    message
+  };
+};
+
 const fetchRooms = rooms => {
   return {
     type: FETCH_ROOMS_REQUEST,
     rooms
   };
 };
-
 const fetchRoomsSuccess = () => {
   return {
     type: FETCH_ROOMS_SUCCESS
@@ -76,7 +83,17 @@ export const getRooms = () => async dispatch => {
   });
 };
 
+export const sendMessage = ({ room, user, message }) => dispatch => {
+  const newMessage = {
+    userName: user,
+    message
+  };
+  const messageRef = myFirebase.database().ref('rooms/' + room);
+
+  messageRef.push(newMessage);
+  dispatch(sendMessageRequest(message));
+};
+
 export const changeRoom = newRoom => async dispatch => {
   dispatch(requestChangeRoom(newRoom));
-  getMessages(newRoom);
 };

@@ -1,4 +1,3 @@
-// TODO convert component to function
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getRooms } from '../../actions';
@@ -13,36 +12,46 @@ class Channels extends Component {
     this.state = {
       rooms: this.props.rooms
     };
-    // this.channelsRef = firebase.database().ref("rooms");
-    this.listenRooms();
   }
 
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   if (nextProps.rooms && prevState.rooms !== nextProps.rooms) {
-  //     return { rooms: nextProps.rooms };
-  //   }
-  //   return null;
-  // }
+  componentDidUpdate(prevProps) {
+    if (prevProps.isAuthenticated !== this.props.isAuthenticated) {
+      this.listenRooms();
+    }
+  }
 
   listenRooms() {
     const { dispatch } = this.props;
     dispatch(getRooms());
   }
 
-  // handleChannelChange = e => {
-  //   this.props.onSelectRoom(e.currentTarget.getAttribute('value'));
-  // };
+  handleChannelChange = e => {
+    const { dispatch } = this.props;
+    const room = e.currentTarget.getAttribute('value');
+
+    dispatch(changeRoom(room));
+  };
 
   render() {
-    const { rooms, loaded } = this.props;
-    console.log('rooms ', rooms);
-    if (!loaded) {
-      return <p>Loading...</p>;
-    }
+    const { rooms, loaded, isAuthenticated } = this.props;
+    if (!isAuthenticated)
+      return (
+        <ul id='ul_top_hypers'>
+          <li>Please authenticate</li>
+        </ul>
+      );
+
+    if (!loaded)
+      return (
+        <ul id='ul_top_hypers'>
+          <li>Loading chat rooms...</li>
+        </ul>
+      );
+
     return (
       <ul id='ul_top_hypers'>
         {rooms.map((room, i) => (
-          <li key={i} value={room}>
+          <li key={i} value={room} onClick={this.handleChannelChange}>
             {room}
           </li>
         ))}
@@ -51,13 +60,16 @@ class Channels extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = ({ auth, messaging }) => {
   return {
-    rooms: state.messaging.rooms,
-    loaded: state.messaging.loadedRooms
+    rooms: messaging.rooms,
+    loaded: messaging.loadedRooms,
+
+    isAuthenticated: auth.isAuthenticated
   };
 };
 
+// TODO use mapDispatchToProps
 // const mapDispatchToProps = {
 //   handleRoomChange: changeRoom
 // };

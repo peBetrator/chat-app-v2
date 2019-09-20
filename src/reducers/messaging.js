@@ -2,6 +2,7 @@ import {
   FETCH_MESSAGES_REQUEST,
   FETCH_MESSAGES_SUCCESS,
   FETCH_MESSAGES_FAILURE,
+  SEND_MESSAGE_REQUEST,
   FETCH_ROOMS_REQUEST,
   FETCH_ROOMS_SUCCESS,
   CHANGE_ROOM_REQUEST
@@ -30,6 +31,11 @@ export default (
         loaded: true
       };
 
+    case SEND_MESSAGE_REQUEST:
+      return {
+        ...state
+      };
+
     case FETCH_ROOMS_REQUEST:
       return {
         ...state,
@@ -40,11 +46,13 @@ export default (
         ...state,
         loadedRooms: true
       };
+
     case CHANGE_ROOM_REQUEST:
       return {
         ...state,
         room: action.room
       };
+
     default:
       return state;
   }
