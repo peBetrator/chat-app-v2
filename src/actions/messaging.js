@@ -58,14 +58,10 @@ const requestChangeRoom = room => {
 export const getMessages = room => async dispatch => {
   dispatch(fetchMessages(room));
   const messageRef = myFirebase.database().ref('rooms/' + room);
-  messageRef
-    .limitToLast(10)
-    .once('value')
-    .then(message => {
-      if (message.exists())
-        dispatch(fetchMessagesSuccess(Object.values(message.val())));
-    })
-    .catch(error => dispatch(fetchMessagesError()));
+  messageRef.limitToLast(10).on('value', message => {
+    if (message.exists())
+      dispatch(fetchMessagesSuccess(Object.values(message.val())));
+  });
   // messageRef.off('value'); // unsubscribe
 };
 

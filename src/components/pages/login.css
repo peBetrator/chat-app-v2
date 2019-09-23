@@ -1,5 +1,5 @@
 .paper {
-  margin-top: 50%;
+  margin: 50px auto 0;
   display: flex;
   padding: 20px;
   flex-direction: column;
@@ -20,4 +20,8 @@
   color: #f50057;
   margin-bottom: 5;
   text-align: center;
+}
+
+a:hover {
+  cursor: pointer;
 }

@@ -4,6 +4,10 @@ export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 
+export const SIGNUP_REQUEST = 'SIGNUP_REQUEST';
+export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
+export const SIGNUP_FAILURE = 'SIGNUP_FAILURE';
+
 export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 export const LOGOUT_FAILURE = 'LOGOUT_FAILURE';
@@ -16,17 +20,26 @@ const requestLogin = () => {
     type: LOGIN_REQUEST
   };
 };
-
 const receiveLogin = user => {
   return {
     type: LOGIN_SUCCESS,
     user
   };
 };
-
-const loginError = () => {
+const loginError = errorMessage => {
   return {
     type: LOGIN_FAILURE
+  };
+};
+
+const requestSignUp = () => {
+  return {
+    type: SIGNUP_REQUEST
+  };
+};
+const signUpError = errorMessage => {
+  return {
+    type: SIGNUP_FAILURE
   };
 };
 
@@ -41,7 +54,6 @@ const receiveLogout = () => {
     type: LOGOUT_SUCCESS
   };
 };
-
 const logoutError = () => {
   return {
     type: LOGOUT_FAILURE
@@ -53,7 +65,6 @@ const verifyRequest = () => {
     type: VERIFY_REQUEST
   };
 };
-
 const verifySuccess = () => {
   return {
     type: VERIFY_SUCCESS
@@ -82,7 +93,7 @@ export const logoutUser = () => dispatch => {
       dispatch(receiveLogout());
     })
     .catch(error => {
-      dispatch(logoutError());
+      dispatch(logoutError(error));
     });
 };
 
@@ -94,4 +105,16 @@ export const verifyAuth = () => dispatch => {
     }
     dispatch(verifySuccess());
   });
+};
+
+export const registerUser = (email, password) => dispatch => {
+  dispatch(requestLogin());
+  myFirebase
+    .auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then(dispatch(requestSignUp()))
+    .then(dispatch(requestLogin()))
+    .catch(error => {
+      dispatch(signUpError(error));
+    });
 };
