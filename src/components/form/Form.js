@@ -16,13 +16,6 @@ class Form extends Component {
     this.listenMessages();
   }
 
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   if (nextProps.user && prevState.userName !== nextProps.user.displayName) {
-  //     return { userName: nextProps.user.displayName };
-  //   }
-  //   return null;
-  // }
-
   componentDidUpdate(prevProps) {
     if (prevProps.room !== this.props.room) {
       this.listenMessages();
@@ -34,11 +27,12 @@ class Form extends Component {
   };
 
   handleSend = () => {
-    const { dispatch, room, userName, email } = this.props;
+    const { dispatch, room, userName, email, uid } = this.props;
     const messageObject = {
       user: userName || email,
       message: this.state.message,
-      room
+      room,
+      uid
     };
     dispatch(sendMessage(messageObject));
     this.setState({ message: '' });
@@ -85,6 +79,7 @@ const mapStateToProps = ({ auth, messaging }) => {
   return {
     userName: auth.user.displayName,
     email: auth.user.email,
+    uid: auth.user.uid,
 
     room: messaging.room,
     messages: messaging.messages,

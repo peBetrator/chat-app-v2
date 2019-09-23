@@ -79,10 +79,11 @@ export const getRooms = () => async dispatch => {
   });
 };
 
-export const sendMessage = ({ room, user, message }) => dispatch => {
+export const sendMessage = ({ room, user, message, uid }) => dispatch => {
   const newMessage = {
     userName: user,
-    message
+    message,
+    uid
   };
   const messageRef = myFirebase.database().ref('rooms/' + room);
 

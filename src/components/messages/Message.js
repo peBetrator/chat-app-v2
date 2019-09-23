@@ -1,16 +1,24 @@
-// TODO convert component to function
-import React, { Component } from 'react';
+import React from 'react';
 import './message.css';
 
-class Message extends Component {
-  render() {
-    return (
-      <div className='message'>
-        <span className='message__author'>{this.props.message.userName}:</span>
-        {this.props.message.message}
-      </div>
-    );
-  }
+import { connect } from 'react-redux';
+
+function Message(props) {
+  const stateUID = props.uid;
+  return (
+    <div className={`message ${stateUID === props.message.uid ? 'me' : 'other'}`}>
+      <span className="message__author">
+        {props.message.userName}:
+      </span>
+      {props.message.message}
+    </div>
+  );
 }
 
-export default Message;
+function mapStateToProps({ auth }) {
+  return {
+    uid: auth.user.uid
+  };
+}
+
+export default connect(mapStateToProps)(Message);

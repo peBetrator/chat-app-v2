@@ -97,9 +97,9 @@ class Login extends Component {
             >
               {this.state.signUp ? 'Sing up' : 'Sign in'}
             </Button>
-            <a onClick={this.switchSignUp}>
+            <div id='link' onClick={this.switchSignUp}>
               {this.state.signUp ? 'Go to login' : 'No account? Register!'}
-            </a>
+            </div>
           </Paper>
         </Container>
       );
