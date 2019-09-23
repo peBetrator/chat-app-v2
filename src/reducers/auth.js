@@ -8,7 +8,8 @@ import {
   LOGOUT_SUCCESS,
   LOGOUT_FAILURE,
   VERIFY_REQUEST,
-  VERIFY_SUCCESS
+  VERIFY_SUCCESS,
+  CHANGE_USERNAME_SUCCESS
 } from '../actions/';
 
 export default (
@@ -92,6 +93,12 @@ export default (
       return {
         ...state,
         isVerifying: false
+      };
+
+    case CHANGE_USERNAME_SUCCESS:
+      return {
+        ...state,
+        user: { ...state.user, displayName: action.user }
       };
 
     default:

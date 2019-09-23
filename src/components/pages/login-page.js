@@ -1,6 +1,10 @@
 // TODO create separate component for register/login form to provide user friendlier UI
 import React, { Component } from 'react';
 
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { loginUser, registerUser } from '../../actions';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -8,11 +12,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
-
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import { loginUser, registerUser } from '../../actions';
-
 import './login.css';
 
 class Login extends Component {
@@ -83,7 +82,9 @@ class Login extends Component {
             />
             {(loginError || signUpError) && (
               <Typography component='p' className='errorText'>
-                {loginError ? "Incorrect email or password." : "Valid email and password > 6 character"}
+                {loginError
+                  ? 'Incorrect email or password.'
+                  : 'Valid email and password > 6 character'}
               </Typography>
             )}
             <Button

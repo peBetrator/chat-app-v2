@@ -1,34 +1,27 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { logoutUser } from '../../actions';
+import React from 'react';
 import './app-header.css';
 
-import Channels from '../channels/channels.js';
+import Channels from '../channels/channels';
+import ProfileMenu from './profile-menu/profile';
+import { connect } from 'react-redux';
 
-class Header extends Component {
-  handleLogOut = () => {
-    const { dispatch } = this.props;
-    dispatch(logoutUser());
-  };
+function Header(props) {
+  const { isAuthenticated } = props;
 
-  render() {
-    const { isAuthenticated, isLoggingOut, logoutError } = this.props;
-    return (
-      <div className='app__header'>
-        {!isAuthenticated ? (
-          <button className='app__button'>Sign in</button>
-        ) : (
-          <button className='app__button' onClick={this.handleLogOut}>
-            Logout
-          </button>
-        )}
-        <Channels />
-      </div>
-    );
-  }
+  return (
+    <div>
+      {!isAuthenticated ? (
+        // TODO make a generic component for button
+        <button className='app__button'>Sign in</button>
+      ) : (
+        <ProfileMenu />
+      )}
+      <Channels />
+    </div>
+  );
 }
 
-function mapStateToProps({auth, messaging}) {
+function mapStateToProps({ auth, messaging }) {
   return {
     isLoggingOut: auth.isLoggingOut,
     logoutError: auth.logoutError,

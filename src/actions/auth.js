@@ -15,6 +15,8 @@ export const LOGOUT_FAILURE = 'LOGOUT_FAILURE';
 export const VERIFY_REQUEST = 'VERIFY_REQUEST';
 export const VERIFY_SUCCESS = 'VERIFY_SUCCESS';
 
+export const CHANGE_USERNAME_SUCCESS = 'CHANGE_USERNAME_SUCCESS';
+
 const requestLogin = () => {
   return {
     type: LOGIN_REQUEST
@@ -71,6 +73,13 @@ const verifySuccess = () => {
   };
 };
 
+const changeUsernameSuccess = user => {
+  return {
+    type: CHANGE_USERNAME_SUCCESS,
+    user
+  };
+};
+
 export const loginUser = (email, password) => dispatch => {
   dispatch(requestLogin());
   myFirebase
@@ -117,4 +126,13 @@ export const registerUser = (email, password) => dispatch => {
     .catch(error => {
       dispatch(signUpError(error));
     });
+};
+
+export const changeName = userName => dispatch => {
+  var user = myFirebase.auth().currentUser;
+  user
+    .updateProfile({
+      displayName: userName
+    })
+    .then(dispatch(changeUsernameSuccess(userName)));
 };
