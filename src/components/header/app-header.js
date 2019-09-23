@@ -28,11 +28,11 @@ class Header extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps({auth, messaging}) {
   return {
-    isLoggingOut: state.auth.isLoggingOut,
-    logoutError: state.auth.logoutError,
-    isAuthenticated: state.auth.isAuthenticated
+    isLoggingOut: auth.isLoggingOut,
+    logoutError: auth.logoutError,
+    isAuthenticated: auth.isAuthenticated
   };
 }
 

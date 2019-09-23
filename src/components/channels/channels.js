@@ -33,7 +33,7 @@ class Channels extends Component {
   };
 
   render() {
-    const { rooms, loaded, isAuthenticated } = this.props;
+    const { curRoom, rooms, loaded, isAuthenticated } = this.props;
     if (!isAuthenticated)
       return (
         <ul id='ul_top_hypers'>
@@ -51,7 +51,12 @@ class Channels extends Component {
     return (
       <ul id='ul_top_hypers'>
         {rooms.map((room, i) => (
-          <li key={i} value={room} onClick={this.handleChannelChange}>
+          <li
+            key={i}
+            className={curRoom === room ? 'selected' : ''}
+            value={room}
+            onClick={this.handleChannelChange}
+          >
             {room}
           </li>
         ))}
@@ -62,6 +67,7 @@ class Channels extends Component {
 
 const mapStateToProps = ({ auth, messaging }) => {
   return {
+    curRoom: messaging.room,
     rooms: messaging.rooms,
     loaded: messaging.loadedRooms,
 
