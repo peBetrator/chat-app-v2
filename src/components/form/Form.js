@@ -75,13 +75,13 @@ class Form extends Component {
   }
 }
 
-const mapStateToProps = ({ auth, messaging }) => {
+const mapStateToProps = ({ auth, messaging, rooms }) => {
   return {
     userName: auth.user.displayName,
     email: auth.user.email,
     uid: auth.user.uid,
 
-    room: messaging.room,
+    room: rooms.room,
     messages: messaging.messages,
     loaded: messaging.loaded
   };

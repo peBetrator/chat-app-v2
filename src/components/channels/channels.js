@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
-import { changeRoom, getRooms } from '../../actions';
-
 import './channels.css';
+
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { changeRoom, getRooms } from '../../actions';
 
 class Channels extends Component {
   componentDidUpdate(prevProps) {
@@ -38,25 +38,26 @@ class Channels extends Component {
     return (
       <ul id='ul_top_hypers'>
         {rooms.map(({ room }, i) => (
-          <li
-            key={i}
-            className={curRoom === room ? 'selected' : ''}
-            value={room}
-            onClick={this.handleChannelChange}
-          >
-            {room}
-          </li>
+          <Link style={{ color: 'black' }} to='/' key={i}>
+            <li
+              className={curRoom === room ? 'selected' : ''}
+              value={room}
+              onClick={this.handleChannelChange}
+            >
+              {room}
+            </li>
+          </Link>
         ))}
       </ul>
     );
   }
 }
 
-const mapStateToProps = ({ auth, messaging }) => {
+const mapStateToProps = ({ auth, rooms }) => {
   return {
-    curRoom: messaging.room,
-    rooms: messaging.rooms,
-    loaded: messaging.loadedRooms,
+    curRoom: rooms.room,
+    rooms: rooms.rooms,
+    loaded: rooms.loadedRooms,
 
     isAuthenticated: auth.isAuthenticated,
     uid: auth.user.uid

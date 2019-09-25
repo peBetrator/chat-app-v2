@@ -1,5 +1,4 @@
 import { myFirebase } from '../firebase/firebase';
-import { resolve } from 'dns';
 
 export const FETCH_MESSAGES_REQUEST = 'FETCH_MESSAGES_REQUEST';
 export const FETCH_MESSAGES_SUCCESS = 'FETCH_MESSAGES_SUCCESS';

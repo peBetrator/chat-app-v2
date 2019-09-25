@@ -25,3 +25,8 @@
 .app__button:hover {
   opacity: 1;
 }
+
+.simple__text {
+  color: black;
+  text-decoration: none;
+}

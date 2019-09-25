@@ -2,7 +2,7 @@ import React from 'react';
 import './app-header.css';
 
 import Channels from '../channels/channels';
-import ProfileMenu from './profile-menu/profile';
+import ProfileMenu from './profile-menu/profile-menu';
 import { connect } from 'react-redux';
 
 function Header(props) {

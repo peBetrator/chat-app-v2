@@ -1,4 +1,4 @@
-#ul_top_hypers li {
+#ul_top_hypers * {
   display: inline-block;
   margin-left: 1rem;
 }

@@ -5,9 +5,10 @@ import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ProtectedRoute from '../protected_route';
+import Header from '../header/app-header';
 import Login from '../pages/login-page';
 import Chat from '../pages/chat-page';
-import Header from '../header/app-header';
+import Profile from '../profile/profile';
 
 function App(props) {
   const { isAuthenticated, isVerifying } = props;
@@ -15,6 +16,7 @@ function App(props) {
     <div className='app'>
       <Header />
       <Switch>
+        <Route path='/login' component={Login} />
         <ProtectedRoute
           exact
           path='/'
@@ -22,7 +24,12 @@ function App(props) {
           isAuthenticated={isAuthenticated}
           isVerifying={isVerifying}
         />
-        <Route path='/login' component={Login} />
+        <ProtectedRoute
+          exact
+          path='/profile'
+          component={Profile}
+          isAuthenticated={isAuthenticated}
+        />
       </Switch>
     </div>
   );

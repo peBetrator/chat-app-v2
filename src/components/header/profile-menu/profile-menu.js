@@ -4,8 +4,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import '../app-header.css';
 
 import ChangeUserName from './change-user-name';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addUserToRoom, logoutUser } from '../../../actions';
+import { addUserToRoom, exitRoom, logoutUser } from '../../../actions';
 
 function ProfileMenu(props) {
   const userName = props.userName || props.email;
@@ -13,7 +14,7 @@ function ProfileMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [input, setInput] = React.useState(false);
 
-  const { addUser, logout } = props;
+  const { addUser, exitRoom, logout } = props;
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -50,7 +51,16 @@ function ProfileMenu(props) {
         onClose={handleClose}
       >
         <MenuItem onClick={handleChangeUserName}>Change display name</MenuItem>
-        <MenuItem onClick={handleClose}>wip: My account</MenuItem>
+        <MenuItem
+          component={Link}
+          to={'/profile'}
+          onClick={() => {
+            exitRoom();
+            handleClose();
+          }}
+        >
+          My profile
+        </MenuItem>
         <MenuItem
           onClick={e => {
             e.preventDefault();
@@ -71,18 +81,19 @@ function ProfileMenu(props) {
   );
 }
 
-function mapStateToProps({ auth, messaging }) {
+function mapStateToProps({ auth, rooms }) {
   return {
     uid: auth.user.uid,
     userName: auth.user.displayName,
     email: auth.user.email,
 
-    room: messaging.room
+    room: rooms.room
   };
 }
 
 const mapDispatchToProps = {
   addUser: addUserToRoom,
+  exitRoom: exitRoom,
   logout: logoutUser
 };
 
