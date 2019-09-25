@@ -1,4 +1,5 @@
 import { myFirebase } from '../firebase/firebase';
+import { resolve } from 'dns';
 
 export const FETCH_MESSAGES_REQUEST = 'FETCH_MESSAGES_REQUEST';
 export const FETCH_MESSAGES_SUCCESS = 'FETCH_MESSAGES_SUCCESS';
@@ -56,8 +57,9 @@ const requestChangeRoom = room => {
 };
 
 export const getMessages = room => async dispatch => {
+  const messageRef = myFirebase.database().ref(`chat/${room}/messages`);
   dispatch(fetchMessages(room));
-  const messageRef = myFirebase.database().ref('rooms/' + room);
+
   messageRef.limitToLast(10).on('value', message => {
     if (message.exists())
       dispatch(fetchMessagesSuccess(Object.values(message.val())));
@@ -65,16 +67,16 @@ export const getMessages = room => async dispatch => {
   // messageRef.off('value'); // unsubscribe
 };
 
-export const getRooms = () => async dispatch => {
-  const roomsRef = myFirebase.database().ref('rooms');
-  const rooms = [];
-  roomsRef.on('child_added', roomSnapshot => {
-    rooms.push(roomSnapshot.key);
-    if (rooms) {
-      setTimeout(() => {
-        dispatch(fetchRooms(rooms));
-        dispatch(fetchRoomsSuccess());
-      }, 1);
+export const getRooms = uid => async dispatch => {
+  const roomsRef = myFirebase
+    .database()
+    .ref('users/rWzQDrOtOtOXMd8BVJtOsPvg4ih2/rooms'); //(`users/${uid}/rooms`);
+
+  roomsRef.once('value', roomSnapshot => {
+    if (roomSnapshot.exists()) {
+      const rooms = Object.values(roomSnapshot.val());
+      dispatch(fetchRooms(rooms));
+      dispatch(fetchRoomsSuccess());
     }
   });
 };
@@ -85,7 +87,7 @@ export const sendMessage = ({ room, user, message, uid }) => dispatch => {
     message,
     uid
   };
-  const messageRef = myFirebase.database().ref('rooms/' + room);
+  const messageRef = myFirebase.database().ref(`chat/${room}/messages`);
 
   messageRef.push(newMessage);
   dispatch(sendMessageRequest(message));

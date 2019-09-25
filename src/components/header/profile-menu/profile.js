@@ -5,7 +5,7 @@ import '../app-header.css';
 
 import ChangeUserName from './change-user-name';
 import { connect } from 'react-redux';
-import { logoutUser } from '../../../actions';
+import { addUserToRoom, logoutUser } from '../../../actions';
 
 function ProfileMenu(props) {
   const userName = props.userName || props.email;
@@ -13,10 +13,7 @@ function ProfileMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [input, setInput] = React.useState(false);
 
-  const handleLogOut = () => {
-    const { dispatch } = props;
-    dispatch(logoutUser());
-  };
+  const { addUser, logout } = props;
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -54,7 +51,21 @@ function ProfileMenu(props) {
       >
         <MenuItem onClick={handleChangeUserName}>Change display name</MenuItem>
         <MenuItem onClick={handleClose}>wip: My account</MenuItem>
-        <MenuItem onClick={handleLogOut}>Logout</MenuItem>
+        <MenuItem
+          onClick={e => {
+            e.preventDefault();
+            addUser({ uid: props.uid, room: props.room });
+          }}
+        >
+          Add user to group
+        </MenuItem>
+        <MenuItem
+          onClick={e => {
+            logout();
+          }}
+        >
+          Logout
+        </MenuItem>
       </Menu>
     </div>
   );
@@ -62,9 +73,20 @@ function ProfileMenu(props) {
 
 function mapStateToProps({ auth, messaging }) {
   return {
+    uid: auth.user.uid,
     userName: auth.user.displayName,
-    email: auth.user.email
+    email: auth.user.email,
+
+    room: messaging.room
   };
 }
 
-export default connect(mapStateToProps)(ProfileMenu);
+const mapDispatchToProps = {
+  addUser: addUserToRoom,
+  logout: logoutUser
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProfileMenu);

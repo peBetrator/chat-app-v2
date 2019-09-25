@@ -1,4 +1,5 @@
 import { myFirebase } from '../firebase/firebase';
+import { resolve } from 'url';
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -117,19 +118,26 @@ export const verifyAuth = () => dispatch => {
 };
 
 export const registerUser = (email, password) => dispatch => {
-  dispatch(requestLogin());
   myFirebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
-    .then(dispatch(requestSignUp()))
-    .then(dispatch(requestLogin()))
+    .then(({ user }) => {
+      dispatch(requestSignUp());
+
+      myFirebase
+        .database()
+        .ref(`users/${user.uid}`)
+        .set({
+          email: email
+        });
+    })
     .catch(error => {
       dispatch(signUpError(error));
     });
 };
 
 export const changeName = userName => dispatch => {
-  var user = myFirebase.auth().currentUser;
+  const user = myFirebase.auth().currentUser;
   user
     .updateProfile({
       displayName: userName

@@ -1,35 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getRooms } from '../../actions';
 
-import { changeRoom } from '../../actions';
+import { changeRoom, getRooms } from '../../actions';
 
 import './channels.css';
 
 class Channels extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      rooms: this.props.rooms
-    };
-  }
-
   componentDidUpdate(prevProps) {
     if (prevProps.isAuthenticated !== this.props.isAuthenticated) {
-      this.listenRooms();
+      this.props.handleGetRooms(this.props.uid);
     }
   }
 
-  listenRooms() {
-    const { dispatch } = this.props;
-    dispatch(getRooms());
-  }
-
   handleChannelChange = e => {
-    const { dispatch } = this.props;
+    const { handleRoomChange } = this.props;
     const room = e.currentTarget.getAttribute('value');
 
-    dispatch(changeRoom(room));
+    handleRoomChange(room);
   };
 
   render() {
@@ -50,7 +37,7 @@ class Channels extends Component {
 
     return (
       <ul id='ul_top_hypers'>
-        {rooms.map((room, i) => (
+        {rooms.map(({ room }, i) => (
           <li
             key={i}
             className={curRoom === room ? 'selected' : ''}
@@ -71,13 +58,17 @@ const mapStateToProps = ({ auth, messaging }) => {
     rooms: messaging.rooms,
     loaded: messaging.loadedRooms,
 
-    isAuthenticated: auth.isAuthenticated
+    isAuthenticated: auth.isAuthenticated,
+    uid: auth.user.uid
   };
 };
 
-// TODO use mapDispatchToProps
-// const mapDispatchToProps = {
-//   handleRoomChange: changeRoom
-// };
+const mapDispatchToProps = {
+  handleRoomChange: changeRoom,
+  handleGetRooms: getRooms
+};
 
-export default connect(mapStateToProps)(Channels);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Channels);

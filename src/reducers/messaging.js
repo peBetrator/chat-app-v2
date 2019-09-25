@@ -10,7 +10,7 @@ import {
 
 export default (
   state = {
-    room: 'global',
+    room: '',
     rooms: [],
     messages: [],
     loaded: false,
