@@ -62,6 +62,16 @@ function ProfileMenu(props) {
           My profile
         </MenuItem>
         <MenuItem
+          component={Link}
+          to={'/channels'}
+          onClick={() => {
+            exitRoom();
+            handleClose();
+          }}
+        >
+          My channels
+        </MenuItem>
+        <MenuItem
           onClick={e => {
             e.preventDefault();
             addUser({ uid: props.uid, room: props.room });

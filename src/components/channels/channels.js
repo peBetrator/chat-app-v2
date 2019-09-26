@@ -38,15 +38,16 @@ class Channels extends Component {
     return (
       <ul id='ul_top_hypers'>
         {rooms.map(({ room }, i) => (
-          <Link style={{ color: 'black' }} to='/' key={i}>
-            <li
-              className={curRoom === room ? 'selected' : ''}
+          <li className={curRoom === room ? 'selected' : ''} key={i}>
+            <Link
+              style={{ textDecoration: 'none', color: 'black' }}
+              to='/'
               value={room}
               onClick={this.handleChannelChange}
             >
               {room}
-            </li>
-          </Link>
+            </Link>
+          </li>
         ))}
       </ul>
     );

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { loginUser, registerUser } from '../../actions';
+import { loginUser, registerUser } from '../../../actions';
 
 function Profile(props) {
   const [name, setName] = React.useState(props.userName);
@@ -24,6 +24,9 @@ function Profile(props) {
         onChange={e => setName(e.target.value)}
         disabled={!isEdit}
       />
+      <br />
+      <label>UID: </label>
+      <input type='text' value={uid} disabled />
       <button
         onClick={() => {
           setEdit(!isEdit);

@@ -8,7 +8,8 @@ import ProtectedRoute from '../protected_route';
 import Header from '../header/app-header';
 import Login from '../pages/login-page';
 import Chat from '../pages/chat-page';
-import Profile from '../profile/profile';
+import Profile from '../pages/manage-profile/profile';
+import Channels from '../pages/manage-channels/channels-table';
 
 function App(props) {
   const { isAuthenticated, isVerifying } = props;
@@ -28,6 +29,12 @@ function App(props) {
           exact
           path='/profile'
           component={Profile}
+          isAuthenticated={isAuthenticated}
+        />
+        <ProtectedRoute
+          exact
+          path='/channels'
+          component={Channels}
           isAuthenticated={isAuthenticated}
         />
       </Switch>
