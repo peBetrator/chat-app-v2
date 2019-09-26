@@ -20,11 +20,18 @@ class Channels extends Component {
   };
 
   render() {
-    const { curRoom, rooms, loaded, isAuthenticated } = this.props;
+    const { curRoom, rooms, loaded, noRooms, isAuthenticated } = this.props;
     if (!isAuthenticated)
       return (
         <ul id='ul_top_hypers'>
           <li>Please authenticate</li>
+        </ul>
+      );
+
+    if (noRooms)
+      return (
+        <ul id='ul_top_hypers'>
+          <li>There are no rooms to display, please create one</li>
         </ul>
       );
 
@@ -59,6 +66,7 @@ const mapStateToProps = ({ auth, rooms }) => {
     curRoom: rooms.room,
     rooms: rooms.rooms,
     loaded: rooms.loadedRooms,
+    noRooms: rooms.noRooms,
 
     isAuthenticated: auth.isAuthenticated,
     uid: auth.user.uid

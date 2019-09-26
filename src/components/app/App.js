@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 
 import ProtectedRoute from '../protected_route';
 import Header from '../header/app-header';
-import Login from '../pages/login-page';
-import Chat from '../pages/chat-page';
+import Login from '../pages/login/login-page';
+import Chat from '../pages/home/chat-page';
 import Profile from '../pages/manage-profile/profile';
 import Channels from '../pages/manage-channels/channels-table';
 

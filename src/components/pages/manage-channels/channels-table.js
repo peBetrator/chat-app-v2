@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
 
 import Modal from '../../modal/modal';
+import AddChannelForm from './add-channel';
 import { connect } from 'react-redux';
-import { changeRoom, getRooms } from '../../../actions';
+import { addUserToRoom, makeRoomPublic, getRooms } from '../../../actions';
 
-class Channels extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { show: false };
-  }
+function Channels(props) {
+  const { rooms, uid } = props;
+  const [show, setShow] = React.useState(false);
 
-  showModal = () => {
-    this.setState({ show: true });
+  const handleClose = () => {
+    setShow(false);
   };
 
-  hideModal = () => {
-    this.setState({ show: false });
+  const handleRights = (room, isPrivate) => {
+    if (!isPrivate) props.addUserToRoom({ room, uid });
+    else props.makeRoomPublic({ room, uid });
+    props.getRooms(uid);
   };
 
-  renderRow = ({ room }, idx) => {
+  const renderRow = ({ room, admin, isPrivate }, idx) => {
     return (
       <tr key={idx}>
         <td>{idx + 1}</td>
@@ -30,9 +31,12 @@ class Channels extends Component {
             Add user
           </button>
           <button
-          // onClick={() => onIncrease(id)}
+            disabled={!admin}
+            onClick={() => {
+              handleRights(room, isPrivate);
+            }}
           >
-            Private / Public
+            {isPrivate ? 'Make Public' : 'Make Private'}
           </button>
           <button
           // onClick={() => onDecrease(id)}
@@ -44,37 +48,37 @@ class Channels extends Component {
     );
   };
 
-  render() {
-    const { rooms } = this.props;
-    return (
-      <div>
-        <h2>Manage Your Channels</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Channel</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rooms.map(this.renderRow)}
-            <tr>
-              <td colSpan='3'>
-                <button type='button' onClick={this.showModal}>
-                  Add room...
-                </button>
-                <Modal show={this.state.show} handleClose={this.hideModal}>
-                  <p>Modal</p>
-                  <p>Data</p>
-                </Modal>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <h2>Manage Your Channels</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Channel</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rooms.map(renderRow)}
+          <tr>
+            <td colSpan='3'>
+              <button
+                onClick={() => {
+                  setShow(true);
+                }}
+              >
+                Add room...
+              </button>
+              <Modal show={show} handleClose={handleClose}>
+                <AddChannelForm handleClose={handleClose} />
+              </Modal>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 const mapStateToProps = ({ auth, rooms }) => {
@@ -86,8 +90,9 @@ const mapStateToProps = ({ auth, rooms }) => {
 };
 
 const mapDispatchToProps = {
-  handleRoomChange: changeRoom,
-  handleGetRooms: getRooms
+  addUserToRoom,
+  makeRoomPublic,
+  getRooms
 };
 
 export default connect(
