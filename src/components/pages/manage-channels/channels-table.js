@@ -1,20 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import Modal from '../../modal/modal';
 import AddChannelForm from './add-channel';
+import AddUserForm from './add-user';
 import { connect } from 'react-redux';
-import { addUserToRoom, makeRoomPublic, getRooms } from '../../../actions';
+import { makeRoomPrivate, makeRoomPublic, getRooms } from '../../../actions';
 
 function Channels(props) {
   const { rooms, uid } = props;
-  const [show, setShow] = React.useState(false);
+  const [showChannel, setShowC] = React.useState(false);
+  const [showUser, setShowU] = React.useState(false);
+  const [curRoom, setCurRoom] = React.useState('');
 
   const handleClose = () => {
-    setShow(false);
+    setShowC(false);
+    setShowU(false);
   };
 
   const handleRights = (room, isPrivate) => {
-    if (!isPrivate) props.addUserToRoom({ room, uid });
+    if (!isPrivate) props.makeRoomPrivate({ room, uid });
     else props.makeRoomPublic({ room, uid });
     props.getRooms(uid);
   };
@@ -26,7 +30,10 @@ function Channels(props) {
         <td>{room}</td>
         <td>
           <button
-          // onClick={() => onDelete(id)}
+            onClick={() => {
+              setShowU(true);
+              setCurRoom(room);
+            }}
           >
             Add user
           </button>
@@ -65,18 +72,22 @@ function Channels(props) {
             <td colSpan='3'>
               <button
                 onClick={() => {
-                  setShow(true);
+                  setShowC(true);
                 }}
               >
                 Add room...
               </button>
-              <Modal show={show} handleClose={handleClose}>
-                <AddChannelForm handleClose={handleClose} />
-              </Modal>
             </td>
           </tr>
         </tbody>
       </table>
+      <Modal show={showChannel || showUser} handleClose={handleClose}>
+        {showChannel ? (
+          <AddChannelForm handleClose={handleClose} />
+        ) : (
+          <AddUserForm room={curRoom} handleClose={handleClose} />
+        )}
+      </Modal>
     </div>
   );
 }
@@ -90,7 +101,7 @@ const mapStateToProps = ({ auth, rooms }) => {
 };
 
 const mapDispatchToProps = {
-  addUserToRoom,
+  makeRoomPrivate,
   makeRoomPublic,
   getRooms
 };

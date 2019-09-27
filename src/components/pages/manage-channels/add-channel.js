@@ -8,27 +8,38 @@ function AddChannelForm(props) {
   const [name, setName] = React.useState('');
 
   const handleSubmit = e => {
-    props.createRoom({ room: name, uid });
-    props.handleClose();
-    props.getRooms(uid);
-  };
+    if (e.currentTarget.value === 'create')
+      props.createRoom({ room: name, uid });
+    if (e.currentTarget.value === 'search')
+      props.searchRoom({ room: name, uid });
 
-  const handleSearch = () => {
-    props.searchRoom({ room: name, uid });
     props.handleClose();
     props.getRooms(uid);
+    setName('');
   };
 
   return (
     <div>
       Create <br />
-      Channel name:
-      <input type='text' value={name} onChange={e => setName(e.target.value)} />
-      <button onClick={handleSubmit}>Create</button>
+      <input
+        type='text'
+        value={name}
+        placeholder='channel name'
+        onChange={e => setName(e.target.value)}
+      />
+      <button value='create' onClick={handleSubmit}>
+        Create
+      </button>
       <br /> or Search <br />
-      Channel name:
-      <input type='text' value={name} onChange={e => setName(e.target.value)} />
-      <button onClick={handleSearch}>Search</button>
+      <input
+        type='text'
+        value={name}
+        placeholder='channel name'
+        onChange={e => setName(e.target.value)}
+      />
+      <button value='search' onClick={handleSubmit}>
+        Search
+      </button>
     </div>
   );
 }

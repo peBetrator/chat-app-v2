@@ -73,14 +73,6 @@ function ProfileMenu(props) {
         </MenuItem>
         <MenuItem
           onClick={e => {
-            e.preventDefault();
-            addUser({ uid: props.uid, room: props.room });
-          }}
-        >
-          Add user to group
-        </MenuItem>
-        <MenuItem
-          onClick={e => {
             logout();
           }}
         >

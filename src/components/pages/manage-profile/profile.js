@@ -1,13 +1,9 @@
 import React from 'react';
 
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import { loginUser, registerUser } from '../../../actions';
 
 function Profile(props) {
   const [name, setName] = React.useState(props.userName);
-  const [email, setEmail] = React.useState(props.email);
-  const [uid, setUid] = React.useState(props.uid);
   const [isEdit, setEdit] = React.useState(false);
 
   const handleSubmit = e => {
@@ -20,13 +16,14 @@ function Profile(props) {
       <label>User Name: </label>
       <input
         type='text'
-        value={name}
+        value={name || ''}
+        placeholder='please set your nickname'
         onChange={e => setName(e.target.value)}
         disabled={!isEdit}
       />
       <br />
       <label>UID: </label>
-      <input type='text' value={uid} disabled />
+      <input type='text' value={props.uid} disabled />
       <button
         onClick={() => {
           setEdit(!isEdit);

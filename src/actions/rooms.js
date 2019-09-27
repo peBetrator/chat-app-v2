@@ -1,3 +1,4 @@
+// TODO remove methods which is not used in state
 import { myFirebase } from '../firebase/firebase';
 
 export const FETCH_ROOMS_REQUEST = 'FETCH_ROOMS_REQUEST';
@@ -56,6 +57,15 @@ export const getRooms = uid => async dispatch => {
 };
 
 export const addUserToRoom = ({ uid, room }) => dispatch => {
+  myFirebase
+    .database()
+    .ref(`chat/${room}/users/${uid}`)
+    .set({
+      access: true
+    });
+};
+
+export const makeRoomPrivate = ({ uid, room }) => dispatch => {
   myFirebase
     .database()
     .ref(`chat/${room}/users/${uid}`)

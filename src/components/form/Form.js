@@ -49,7 +49,7 @@ class Form extends Component {
   };
 
   render() {
-    const { loaded, messages } = this.props;
+    const { messages } = this.props;
     return (
       <div className='form'>
         <div className='form__message'>

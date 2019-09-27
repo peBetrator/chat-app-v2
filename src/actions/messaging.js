@@ -18,11 +18,6 @@ const fetchMessagesSuccess = messages => {
     messages
   };
 };
-const fetchMessagesError = () => {
-  return {
-    type: FETCH_MESSAGES_FAILURE
-  };
-};
 
 const sendMessageRequest = message => {
   return {
