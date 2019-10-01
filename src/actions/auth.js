@@ -86,7 +86,7 @@ export const loginUser = (email, password) => dispatch => {
     .auth()
     .signInWithEmailAndPassword(email, password)
     .then(user => {
-      dispatch(receiveLogin(user));
+      dispatch(receiveLogin(user.user));
     })
     .catch(error => {
       dispatch(loginError());
