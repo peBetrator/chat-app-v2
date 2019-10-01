@@ -7,11 +7,19 @@ import { getRooms, addUserToRoom } from '../../../actions';
 function AddUserForm(props) {
   const { room } = props;
   const [userName, setUserName] = React.useState('');
+  const [added, setAdded] = React.useState(false);
 
   const handleSubmit = e => {
     searchUser(userName);
-    props.handleClose();
     setUserName('');
+  };
+
+  const displayMessage = () => {
+    setAdded(true);
+    setTimeout(() => {
+      props.handleClose();
+      setAdded(false);
+    }, 1000);
   };
 
   const searchUser = user => {
@@ -21,15 +29,23 @@ function AddUserForm(props) {
       usersRef
         .orderByChild('email')
         .equalTo(user)
-        .once('value', snapshot => {
+        .once('value')
+        .then(snapshot => {
           snapshot.forEach(data => {
-            props.addUserToRoom({ room, uid: data.key });
+            props.addUserToRoom(room, data.key);
+            displayMessage();
           });
         });
     else
-      usersRef.child(`/${user}/email`).once('value', data => {
-        if (data.exists()) props.addUserToRoom({ room, uid: user });
-      });
+      usersRef
+        .child(`/${user}/email`)
+        .once('value')
+        .then(data => {
+          if (data.exists()) {
+            props.addUserToRoom(room, user);
+            displayMessage();
+          }
+        });
   };
 
   const validateEmail = email => {
@@ -49,6 +65,8 @@ function AddUserForm(props) {
       <button value='create' onClick={handleSubmit}>
         Search
       </button>
+      <br />
+      {added ? 'user was found' : ''}
     </div>
   );
 }

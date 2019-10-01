@@ -1,9 +1,13 @@
-// TODO remove methods which is not used in state
+// TODO remove methods which are not used in state
+// move here all methods using firebase connection
 import { myFirebase } from '../firebase/firebase';
 
 export const FETCH_ROOMS_REQUEST = 'FETCH_ROOMS_REQUEST';
 export const FETCH_ROOMS_SUCCESS = 'FETCH_ROOMS_SUCCESS';
 export const FETCH_ROOMS_EMPTY = 'FETCH_ROOMS_EMPTY';
+
+export const SEARCH_ROOM_REQUEST = 'SEARCH_ROOM_REQUEST';
+export const SEARCH_ROOM_SUCCESS = 'SEARCH_ROOM_SUCCESS';
 
 export const ADD_ROOM_REQUEST = 'ADD_ROOM_REQUEST';
 
@@ -44,6 +48,17 @@ const exit = () => {
   };
 };
 
+const searchRoomRequest = () => {
+  return {
+    type: SEARCH_ROOM_REQUEST
+  };
+};
+const foundRoom = () => {
+  return {
+    type: SEARCH_ROOM_SUCCESS
+  };
+};
+
 export const getRooms = uid => async dispatch => {
   const roomsRef = myFirebase.database().ref(`users/${uid}/rooms`);
 
@@ -56,26 +71,17 @@ export const getRooms = uid => async dispatch => {
   });
 };
 
-export const addUserToRoom = ({ uid, room }) => dispatch => {
-  myFirebase
-    .database()
-    .ref(`chat/${room}/users/${uid}`)
-    .set({
-      access: true
-    });
-};
-
 export const makeRoomPrivate = ({ uid, room }) => dispatch => {
   myFirebase
     .database()
-    .ref(`chat/${room}/users/${uid}`)
-    .set({
-      access: true
+    .ref(`users/${uid}/rooms/${room}`)
+    .update({
+      isPrivate: true
     });
 
   myFirebase
     .database()
-    .ref(`users/${uid}/rooms/${room}`)
+    .ref(`chat/${room}`)
     .update({
       isPrivate: true
     });
@@ -84,12 +90,12 @@ export const makeRoomPrivate = ({ uid, room }) => dispatch => {
 export const makeRoomPublic = ({ uid, room }) => dispatch => {
   myFirebase
     .database()
-    .ref(`chat/${room}/users`)
+    .ref(`users/${uid}/rooms/${room}/isPrivate`)
     .remove();
 
   myFirebase
     .database()
-    .ref(`users/${uid}/rooms/${room}/isPrivate`)
+    .ref(`chat/${room}/isPrivate`)
     .remove();
 };
 
@@ -104,29 +110,41 @@ export const createRoom = ({ room, uid }) => dispatch => {
     message: `'${room}' was successfuly created`,
     uid: 1111111111
   };
-
   newRoom.push(chatMessage);
-  dispatch(room => {
-    return {
-      type: ADD_ROOM_REQUEST,
-      room
-    };
-  });
-  addRoomToProfile(room, uid);
-};
 
-const addRoomToProfile = (room, uid) => {
+  addUserToRoom(room, uid)(dispatch);
   myFirebase
     .database()
     .ref(`users/${uid}/rooms/${room}`)
-    .set({ room, admin: true });
+    .update({ admin: true });
+};
+
+export const addUserToRoom = (room, uid) => dispatch => {
+  myFirebase
+    .database()
+    .ref(`users/${uid}/rooms/${room}`)
+    .update({ room });
+
+  myFirebase
+    .database()
+    .ref(`chat/${room}/users/${uid}`)
+    .update({
+      access: true
+    });
 };
 
 export const searchRoom = ({ room, uid }) => dispatch => {
   const roomRef = myFirebase.database().ref(`chat/${room}/messages`);
 
-  roomRef.on('value', message => {
-    if (message.exists()) addRoomToProfile(room, uid);
+  roomRef.once('value').then(message => {
+    if (message.exists()) {
+      addUserToRoom(room, uid);
+      dispatch(foundRoom());
+      addUserToRoom(room, uid)(dispatch);
+      setTimeout(() => {
+        dispatch(searchRoomRequest());
+      }, 1000);
+    }
   });
 };
 

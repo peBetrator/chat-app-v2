@@ -1,54 +1,76 @@
-import React from 'react';
+import React, { Component } from 'react';
+import './add-channel.css';
 
 import { connect } from 'react-redux';
 import { createRoom, searchRoom, getRooms } from '../../../actions';
 
-function AddChannelForm(props) {
-  const { uid } = props;
-  const [name, setName] = React.useState('');
+class AddChannelForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { name: '' };
+  }
 
-  const handleSubmit = e => {
-    if (e.currentTarget.value === 'create')
-      props.createRoom({ room: name, uid });
+  componentDidUpdate(prevProps) {
+    const { roomFound } = this.props;
+    if (!roomFound && prevProps.roomFound !== roomFound)
+      this.props.handleClose();
+  }
+
+  handleSubmit = e => {
+    const { uid, createRoom, searchRoom, getRooms } = this.props;
+    if (e.currentTarget.value === 'create') {
+      createRoom({ room: this.state.name, uid });
+      this.props.handleClose();
+    }
     if (e.currentTarget.value === 'search')
-      props.searchRoom({ room: name, uid });
+      searchRoom({ room: this.state.name, uid });
 
-    props.handleClose();
-    props.getRooms(uid);
-    setName('');
+    getRooms(uid);
+    this.setState({ name: '' });
   };
 
-  return (
-    <div>
-      Create <br />
-      <input
-        type='text'
-        value={name}
-        placeholder='channel name'
-        onChange={e => setName(e.target.value)}
-      />
-      <button value='create' onClick={handleSubmit}>
-        Create
-      </button>
-      <br /> or Search <br />
-      <input
-        type='text'
-        value={name}
-        placeholder='channel name'
-        onChange={e => setName(e.target.value)}
-      />
-      <button value='search' onClick={handleSubmit}>
-        Search
-      </button>
-    </div>
-  );
+  render() {
+    const { roomFound } = this.props;
+    return (
+      <div className='row'>
+        <div className='column'>
+          Create <br />
+          <input
+            type='text'
+            value={this.state.name}
+            placeholder='channel name'
+            onChange={e => this.setState({ name: e.target.value })}
+          />
+          <button value='create' onClick={this.handleSubmit}>
+            Create
+          </button>
+        </div>
+        <div className='column'>
+          or Search <br />
+          <input
+            type='text'
+            value={this.state.name}
+            placeholder='channel name'
+            onChange={e => this.setState({ name: e.target.value })}
+          />
+          <button value='search' onClick={this.handleSubmit}>
+            Search
+          </button>
+          <br />
+          {roomFound ? 'room was found' : ''}
+        </div>
+      </div>
+    );
+  }
 }
 
-const mapStateToProps = ({ auth }) => {
+const mapStateToProps = ({ auth, rooms }) => {
   return {
     userName: auth.user.displayName,
     email: auth.user.email,
-    uid: auth.user.uid
+    uid: auth.user.uid,
+
+    roomFound: rooms.roomFound
   };
 };
 

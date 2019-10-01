@@ -4,6 +4,8 @@ import {
   FETCH_ROOMS_EMPTY,
   CHANGE_ROOM_REQUEST,
   ADD_ROOM_REQUEST,
+  SEARCH_ROOM_REQUEST,
+  SEARCH_ROOM_SUCCESS,
   EXIT_ROOM_REQUEST
 } from '../actions';
 
@@ -12,7 +14,8 @@ export default (
     room: '',
     rooms: [],
     loadedRooms: false,
-    noRooms: false
+    noRooms: false,
+    roomFound: false
   },
   action
 ) => {
@@ -32,6 +35,17 @@ export default (
       return {
         ...state,
         noRooms: true
+      };
+
+    case SEARCH_ROOM_REQUEST:
+      return {
+        ...state,
+        roomFound: false
+      };
+    case SEARCH_ROOM_SUCCESS:
+      return {
+        ...state,
+        roomFound: true
       };
 
     case ADD_ROOM_REQUEST:
