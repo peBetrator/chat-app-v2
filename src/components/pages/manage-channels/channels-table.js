@@ -4,10 +4,23 @@ import Modal from '../../modal/modal';
 import AddChannelForm from './add-channel';
 import AddUserForm from './add-user';
 import { connect } from 'react-redux';
-import { makeRoomPrivate, makeRoomPublic, getRooms } from '../../../actions';
+import {
+  makeRoomPrivate,
+  makeRoomPublic,
+  getRooms,
+  leaveChat
+} from '../../../actions';
 
 function Channels(props) {
-  const { rooms, uid } = props;
+  const {
+    rooms,
+    uid,
+    getRooms,
+    makeRoomPublic,
+    makeRoomPrivate,
+    leaveChat
+  } = props;
+
   const [showChannel, setShowC] = React.useState(false);
   const [showUser, setShowU] = React.useState(false);
   const [curRoom, setCurRoom] = React.useState('');
@@ -18,9 +31,9 @@ function Channels(props) {
   };
 
   const handleRights = (room, isPrivate) => {
-    if (!isPrivate) props.makeRoomPrivate({ room, uid });
-    else props.makeRoomPublic({ room, uid });
-    props.getRooms(uid);
+    if (!isPrivate) makeRoomPrivate({ room, uid });
+    else makeRoomPublic({ room, uid });
+    getRooms(uid);
   };
 
   const renderRow = ({ room, admin, isPrivate }, idx) => {
@@ -45,11 +58,7 @@ function Channels(props) {
           >
             {isPrivate ? 'Make Public' : 'Make Private'}
           </button>
-          <button
-          // onClick={() => onDecrease(id)}
-          >
-            Leave chat
-          </button>
+          <button onClick={() => leaveChat(room, uid)}>Leave chat</button>
         </td>
       </tr>
     );
@@ -103,7 +112,8 @@ const mapStateToProps = ({ auth, rooms }) => {
 const mapDispatchToProps = {
   makeRoomPrivate,
   makeRoomPublic,
-  getRooms
+  getRooms,
+  leaveChat
 };
 
 export default connect(

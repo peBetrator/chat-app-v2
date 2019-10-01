@@ -1,5 +1,8 @@
 #ul_top_hypers * {
   display: inline-block;
+}
+
+li {
   margin-left: 1rem;
 }
 

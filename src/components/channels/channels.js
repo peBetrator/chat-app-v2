@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import './channels.css';
 
+import ChannelsSetting from './channels-settings/channels-settings';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { changeRoom, getRooms } from '../../actions';
 
 class Channels extends Component {
   componentDidUpdate(prevProps) {
-    if (prevProps.isAuthenticated !== this.props.isAuthenticated) {
+    if (
+      this.props.uid &&
+      prevProps.isAuthenticated !== this.props.isAuthenticated
+    ) {
       this.props.handleGetRooms(this.props.uid);
     }
   }
@@ -54,6 +58,7 @@ class Channels extends Component {
             >
               {room}
             </Link>
+            <ChannelsSetting room={room} />
           </li>
         ))}
       </ul>

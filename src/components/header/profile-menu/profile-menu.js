@@ -6,7 +6,7 @@ import '../app-header.css';
 import ChangeUserName from './change-user-name';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addUserToRoom, exitRoom, logoutUser } from '../../../actions';
+import { exitRoom, logoutUser } from '../../../actions';
 
 function ProfileMenu(props) {
   const userName = props.userName || props.email;
@@ -14,7 +14,7 @@ function ProfileMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [input, setInput] = React.useState(false);
 
-  const { addUser, exitRoom, logout } = props;
+  const { exitRoom, logoutUser } = props;
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -73,7 +73,7 @@ function ProfileMenu(props) {
         </MenuItem>
         <MenuItem
           onClick={e => {
-            logout();
+            logoutUser();
           }}
         >
           Logout
@@ -94,9 +94,8 @@ function mapStateToProps({ auth, rooms }) {
 }
 
 const mapDispatchToProps = {
-  addUser: addUserToRoom,
-  exitRoom: exitRoom,
-  logout: logoutUser
+  exitRoom,
+  logoutUser
 };
 
 export default connect(

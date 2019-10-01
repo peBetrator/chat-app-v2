@@ -2,7 +2,7 @@ import React from 'react';
 import { myFirebase } from '../../../firebase/firebase';
 
 import { connect } from 'react-redux';
-import { getRooms, addUserToRoom } from '../../../actions';
+import { addUserToRoom } from '../../../actions';
 
 function AddUserForm(props) {
   const { room } = props;
@@ -80,7 +80,6 @@ const mapStateToProps = ({ auth }) => {
 };
 
 const mapDispatchToProps = {
-  getRooms,
   addUserToRoom
 };
 
