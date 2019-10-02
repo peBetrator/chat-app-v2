@@ -10,18 +10,13 @@ function Header(props) {
 
   return (
     <div>
-      {!isAuthenticated ? (
-        // TODO make a generic component for button
-        <button className='app__button'>Sign in</button>
-      ) : (
-        <ProfileMenu />
-      )}
+      {isAuthenticated && <ProfileMenu />}
       <Channels />
     </div>
   );
 }
 
-function mapStateToProps({ auth, messaging }) {
+function mapStateToProps({ auth }) {
   return {
     isLoggingOut: auth.isLoggingOut,
     logoutError: auth.logoutError,

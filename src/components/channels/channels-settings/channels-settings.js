@@ -22,9 +22,9 @@ function ChannelsSetting(props) {
   return (
     // TODO create a generic component for Menu dropdown(used in profile-menu.js; channels-setting.js; member-list.js)
     <div>
-      <div className='settings' onClick={handleClick}>
+      <span role='img' aria-label='settings' onClick={handleClick}>
         ⚙️
-      </div>
+      </span>
       <Menu
         id='simple-menu'
         anchorEl={anchorSettings}

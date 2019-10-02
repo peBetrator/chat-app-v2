@@ -19,7 +19,7 @@ export const CHANGE_ROOM_REQUEST = 'CHANGE_ROOM_REQUEST';
 export const EXIT_ROOM_REQUEST = 'EXIT_ROOM_REQUEST';
 export const LEAVE_CHAT_REQUEST = 'LEAVE_CHAT_REQUEST';
 
-export const MAKE_ROOM_PIBLIC = 'MAKE_ROOM_PIBLIC';
+export const MAKE_ROOM_PUBLIC = 'MAKE_ROOM_PUBLIC';
 export const ADD_USER_REQUEST = 'ADD_USER_REQUEST';
 
 const fetchRooms = rooms => {
@@ -94,7 +94,7 @@ export const getRooms = uid => dispatch => {
 };
 
 export const getMembers = room => dispatch => {
-  const roomRef = myFirebase.database().ref(`chat/${room}/users`);
+  const roomRef = myFirebase.database().ref(`room-metadata/${room}/authorized-users`);
   const userRef = myFirebase.database().ref(`users/`);
   const members = [];
 
@@ -102,7 +102,7 @@ export const getMembers = room => dispatch => {
   roomRef.once('value').then(usersSnapshot => {
     if (usersSnapshot.exists()) {
       const uids = Object.keys(usersSnapshot.val());
-      uids.map(uid => {
+      uids.forEach(uid => {
         userRef
           .child(uid)
           .once('value')
@@ -129,7 +129,7 @@ export const makeRoomPrivate = ({ uid, room }) => dispatch => {
 
   myFirebase
     .database()
-    .ref(`chat/${room}`)
+    .ref(`room-metadata/${room}`)
     .update({
       isPrivate: true
     });
@@ -143,7 +143,7 @@ export const makeRoomPublic = ({ uid, room }) => dispatch => {
 
   myFirebase
     .database()
-    .ref(`chat/${room}/isPrivate`)
+    .ref(`room-metadata/${room}/isPrivate`)
     .remove();
 };
 
@@ -161,7 +161,7 @@ export const leaveChat = (room, uid) => dispatch => {
 };
 
 export const createRoom = ({ room, uid }) => dispatch => {
-  const newRoom = myFirebase.database().ref(`chat/${room}/messages`);
+  const newRoom = myFirebase.database().ref(`room-messages/${room}/`);
   const chatMessage = {
     rabotyaga: true,
     message: `'${room}' was successfuly created`,
@@ -184,14 +184,14 @@ export const addUserToRoom = (room, uid) => dispatch => {
 
   myFirebase
     .database()
-    .ref(`chat/${room}/users/${uid}`)
+    .ref(`room-metadata/${room}/authorized-users/${uid}`)
     .update({
       access: true
     });
 };
 
 export const searchRoom = ({ room, uid }) => dispatch => {
-  const roomRef = myFirebase.database().ref(`chat/${room}/messages`);
+  const roomRef = myFirebase.database().ref(`room-messages/${room}/`);
 
   roomRef.once('value').then(message => {
     if (message.exists()) {

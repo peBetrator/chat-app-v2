@@ -27,7 +27,7 @@ const sendMessageRequest = message => {
 };
 
 export const getMessages = room => async dispatch => {
-  const messageRef = myFirebase.database().ref(`chat/${room}/messages`);
+  const messageRef = myFirebase.database().ref(`room-messages/${room}`);
   dispatch(fetchMessages(room));
 
   messageRef.limitToLast(10).on('value', message => {
@@ -42,7 +42,7 @@ export const sendMessage = ({ room, user, message, uid }) => dispatch => {
     message,
     uid
   };
-  const messageRef = myFirebase.database().ref(`chat/${room}/messages`);
+  const messageRef = myFirebase.database().ref(`room-messages/${room}`);
 
   messageRef.push(newMessage);
   dispatch(sendMessageRequest(message));

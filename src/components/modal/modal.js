@@ -6,6 +6,7 @@ function Modal(props) {
     ? 'modal display-block'
     : 'modal display-none';
 
+  // TODO use React.createPortal to display modal window
   return (
     <div className={showHideClassName}>
       <section className='modal-main'>

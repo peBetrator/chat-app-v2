@@ -27,14 +27,14 @@ class Form extends Component {
   };
 
   handleSend = () => {
-    const { dispatch, room, userName, email, uid } = this.props;
+    const { sendMessage, room, userName, email, uid } = this.props;
     const messageObject = {
       user: userName || email,
       message: this.state.message,
       room,
       uid
     };
-    dispatch(sendMessage(messageObject));
+    sendMessage(messageObject);
     this.setState({ message: '' });
     this.listenMessages();
   };
@@ -44,8 +44,8 @@ class Form extends Component {
   };
 
   listenMessages = () => {
-    const { dispatch, room } = this.props;
-    dispatch(getMessages(room));
+    const { getMessages, room } = this.props;
+    getMessages(room);
   };
 
   render() {
@@ -87,4 +87,12 @@ const mapStateToProps = ({ auth, messaging, rooms }) => {
   };
 };
 
-export default connect(mapStateToProps)(Form);
+const mapDispatchToProps = {
+  getMessages,
+  sendMessage
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Form);

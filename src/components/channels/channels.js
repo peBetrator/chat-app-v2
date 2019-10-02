@@ -25,12 +25,7 @@ class Channels extends Component {
 
   render() {
     const { curRoom, rooms, loaded, noRooms, isAuthenticated } = this.props;
-    if (!isAuthenticated)
-      return (
-        <ul id='ul_top_hypers'>
-          <li>Please authenticate</li>
-        </ul>
-      );
+    if (!isAuthenticated) return null;
 
     if (noRooms)
       return (
