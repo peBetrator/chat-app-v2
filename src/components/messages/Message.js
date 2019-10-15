@@ -5,12 +5,15 @@ import { connect } from 'react-redux';
 
 function Message(props) {
   const stateUID = props.uid;
+  const { uid, name, message, timestamp } = props.message;
+  const time = new Date(timestamp).toLocaleTimeString();
+
   return (
-    <div className={`message ${stateUID === props.message.uid ? 'me' : 'other'}`}>
-      <span className="message__author">
-        {props.message.userName}:
+    <div className={`message ${stateUID === uid ? 'me' : 'other'}`}>
+      <span className='message__author'>
+        {name} ({time}):
       </span>
-      {props.message.message}
+      {message}
     </div>
   );
 }

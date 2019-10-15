@@ -3,7 +3,6 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import './channels-settings.css';
 
-import MemberList from './member-list';
 import { connect } from 'react-redux';
 import { leaveChat } from '../../../actions';
 
@@ -32,9 +31,9 @@ function ChannelsSetting(props) {
         open={Boolean(anchorSettings)}
         onClose={handleClose}
       >
-        <MenuItem>
+        {/* <MenuItem>
           <MemberList room={room} handleClose={handleClose} />
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem
           onClick={() => {
             leaveChat(room, uid);

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Modal from '../../modal/modal';
+import ErrorMessage from '../../error-message/error-message';
 import AddChannelForm from './add-channel';
 import AddUserForm from './add-user';
 import { connect } from 'react-redux';
@@ -15,6 +16,7 @@ function Channels(props) {
   const {
     rooms,
     uid,
+    errorMsg,
     getRooms,
     makeRoomPublic,
     makeRoomPrivate,
@@ -79,6 +81,7 @@ function Channels(props) {
           {rooms.map(renderRow)}
           <tr>
             <td colSpan='3'>
+              {!errorMsg || <ErrorMessage error={errorMsg} />}
               <button
                 onClick={() => {
                   setShowC(true);
@@ -104,6 +107,7 @@ function Channels(props) {
 const mapStateToProps = ({ auth, rooms }) => {
   return {
     rooms: rooms.rooms,
+    errorMsg: rooms.errorMsg,
 
     uid: auth.user.uid
   };

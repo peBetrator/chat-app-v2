@@ -38,9 +38,10 @@ export const getMessages = room => async dispatch => {
 
 export const sendMessage = ({ room, user, message, uid }) => dispatch => {
   const newMessage = {
-    userName: user,
+    uid,
+    name: user,
     message,
-    uid
+    timestamp: +new Date()
   };
   const messageRef = myFirebase.database().ref(`room-messages/${room}`);
 

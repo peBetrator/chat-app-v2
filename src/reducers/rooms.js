@@ -9,7 +9,8 @@ import {
   SEARCH_ROOM_REQUEST,
   SEARCH_ROOM_SUCCESS,
   LEAVE_CHAT_REQUEST,
-  EXIT_ROOM_REQUEST
+  EXIT_ROOM_REQUEST,
+  ERROR_CATCHED
 } from '../actions';
 
 export default (
@@ -20,7 +21,8 @@ export default (
     members: [],
     loadedMembers: false,
     noRooms: false,
-    roomFound: false
+    roomFound: false,
+    errorMsg: ''
   },
   action
 ) => {
@@ -86,6 +88,12 @@ export default (
       return {
         ...state,
         rooms: state.rooms.filter(item => item.room !== action.room)
+      };
+
+    case ERROR_CATCHED:
+      return {
+        ...state,
+        errorMsg: action.error
       };
 
     default:

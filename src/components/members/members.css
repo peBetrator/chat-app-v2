@@ -1,0 +1,13 @@
+.right {
+  float: right;
+  width: 300px;
+  padding: 10px;
+}
+
+.display {
+  display: block;
+}
+
+.hide {
+  display: none;
+}

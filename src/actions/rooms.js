@@ -22,6 +22,8 @@ export const LEAVE_CHAT_REQUEST = 'LEAVE_CHAT_REQUEST';
 export const MAKE_ROOM_PUBLIC = 'MAKE_ROOM_PUBLIC';
 export const ADD_USER_REQUEST = 'ADD_USER_REQUEST';
 
+export const ERROR_CATCHED = 'ERROR_CATCHED';
+
 const fetchRooms = rooms => {
   return {
     type: FETCH_ROOMS_REQUEST,
@@ -81,6 +83,13 @@ const leaveChatRequest = room => {
   };
 };
 
+const catchError = error => {
+  return {
+    type: ERROR_CATCHED,
+    error
+  };
+};
+
 export const getRooms = uid => dispatch => {
   const roomsRef = myFirebase.database().ref(`users/${uid}/rooms`);
 
@@ -94,7 +103,9 @@ export const getRooms = uid => dispatch => {
 };
 
 export const getMembers = room => dispatch => {
-  const roomRef = myFirebase.database().ref(`room-metadata/${room}/authorized-users`);
+  const roomRef = myFirebase
+    .database()
+    .ref(`room-metadata/${room}/authorized-users`);
   const userRef = myFirebase.database().ref(`users/`);
   const members = [];
 
@@ -147,10 +158,6 @@ export const makeRoomPublic = ({ uid, room }) => dispatch => {
     .remove();
 };
 
-export const exitRoom = () => dispatch => {
-  dispatch(exit());
-};
-
 export const leaveChat = (room, uid) => dispatch => {
   myFirebase
     .database()
@@ -161,19 +168,22 @@ export const leaveChat = (room, uid) => dispatch => {
 };
 
 export const createRoom = ({ room, uid }) => dispatch => {
-  const newRoom = myFirebase.database().ref(`room-messages/${room}/`);
-  const chatMessage = {
-    rabotyaga: true,
-    message: `'${room}' was successfuly created`,
-    uid: 1111111111
-  };
-  newRoom.push(chatMessage);
-
-  addUserToRoom(room, uid)(dispatch);
   myFirebase
     .database()
-    .ref(`users/${uid}/rooms/${room}`)
-    .update({ admin: true });
+    .ref(`room-metadata/${room}`)
+    .update({ createdByUser: uid })
+    .then(
+      () => {
+        addUserToRoom(room, uid)(dispatch);
+        myFirebase
+          .database()
+          .ref(`users/${uid}/rooms/${room}`)
+          .update({ admin: true });
+      },
+      error => {
+        dispatch(catchError(error));
+      }
+    );
 };
 
 export const addUserToRoom = (room, uid) => dispatch => {
@@ -191,20 +201,32 @@ export const addUserToRoom = (room, uid) => dispatch => {
 };
 
 export const searchRoom = ({ room, uid }) => dispatch => {
-  const roomRef = myFirebase.database().ref(`room-messages/${room}/`);
+  const roomRef = myFirebase.database().ref(`room-metadata/${room}/`);
 
-  roomRef.once('value').then(message => {
-    if (message.exists()) {
-      addUserToRoom(room, uid);
-      dispatch(foundRoom());
-      addUserToRoom(room, uid)(dispatch);
-      setTimeout(() => {
-        dispatch(searchRoomRequest());
-      }, 1000);
+  roomRef.once('value').then(
+    roomSnap => {
+      if (roomSnap.exists()) {
+        addUserToRoom(room, uid)(dispatch);
+        dispatch(foundRoom());
+        setTimeout(() => {
+          dispatch(searchRoomRequest());
+        }, 1000);
+      }
+    },
+    error => {
+      dispatch(catchError(error));
     }
-  });
+  );
 };
 
 export const changeRoom = newRoom => async dispatch => {
   dispatch(requestChangeRoom(newRoom));
+};
+
+export const exitRoom = () => dispatch => {
+  dispatch(exit());
+};
+
+export const clearError = () => dispatch => {
+  dispatch(catchError(''));
 };
