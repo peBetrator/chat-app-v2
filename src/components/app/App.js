@@ -6,16 +6,18 @@ import { connect } from 'react-redux';
 
 import ProtectedRoute from '../protected_route';
 import Header from '../header/app-header';
+import Channels from '../channels/channels';
 import Login from '../pages/login/login-page';
 import Chat from '../pages/home/chat-page';
 import Profile from '../pages/manage-profile/profile';
-import Channels from '../pages/manage-channels/channels-table';
+import ChannelsTable from '../pages/manage-channels/channels-table';
 
 function App(props) {
   const { isAuthenticated, isVerifying } = props;
   return (
-    <div className='app'>
-      <Header />
+    <div>
+      {/* <Header /> */}
+      <Channels />
       <Switch>
         <Route path='/login' component={Login} />
         <ProtectedRoute
@@ -34,7 +36,7 @@ function App(props) {
         <ProtectedRoute
           exact
           path='/channels'
-          component={Channels}
+          component={ChannelsTable}
           isAuthenticated={isAuthenticated}
         />
       </Switch>

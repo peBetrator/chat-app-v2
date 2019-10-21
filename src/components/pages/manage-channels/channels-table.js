@@ -1,6 +1,7 @@
 import React from 'react';
+import './channels-table.css';
 
-import Modal from '../../modal/modal';
+import Modal from '../../common/modal';
 import ErrorMessage from '../../error-message/error-message';
 import AddChannelForm from './add-channel';
 import AddUserForm from './add-user';
@@ -12,7 +13,7 @@ import {
   leaveChat
 } from '../../../actions';
 
-function Channels(props) {
+function ChannelsTable(props) {
   const {
     rooms,
     uid,
@@ -67,7 +68,7 @@ function Channels(props) {
   };
 
   return (
-    <div>
+    <div className='channel__table'>
       <h2>Manage Your Channels</h2>
       <table>
         <thead>
@@ -123,4 +124,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Channels);
+)(ChannelsTable);

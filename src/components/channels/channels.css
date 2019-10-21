@@ -1,11 +1,47 @@
+.selected {
+  font-weight: bold;
+}
+
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+.sidebar li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem;
+  color: black;
+  text-decoration: none;
+}
+
+.section {
+  font-weight: bold;
+  color: black;
+  padding: 0.25rem;
+  padding-top: 1rem;
+}
+
+.sidebar li.active {
+  background-color: rgba(28, 18, 167, 0.685);
+  color: white;
+}
+
+.sidebar li:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
 #ul_top_hypers * {
   display: inline-block;
 }
 
-li {
-  margin-left: 1rem;
-}
-
-.selected {
-  font-weight: bold;
+p {
+  opacity: 0.5;
+  font-size: 13px;
 }

@@ -1,3 +1,17 @@
 .settings {
   margin-left: 0;
 }
+
+.confirmation {
+  color: black;
+  background-color: white;
+}
+
+.conf__submit {
+  margin: 10px;
+}
+
+.conf__decline {
+  float: right;
+  margin: 10px;
+}

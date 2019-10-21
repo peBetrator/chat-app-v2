@@ -1,6 +1,6 @@
 .form {
   /* display: flex; */
-  display: inline-block;
+  /* display: inline-block; */
   flex-wrap: nowrap;
   flex-direction: column;
   width: 100%;

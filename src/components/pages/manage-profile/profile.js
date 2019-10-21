@@ -1,4 +1,5 @@
 import React from 'react';
+import './manage-profile.css';
 
 import { connect } from 'react-redux';
 import { changeName } from '../../../actions';
@@ -15,7 +16,7 @@ function Profile(props) {
 
   return (
     // TODO create generic input for profile settings
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className='profile__table'>
       <label>User Name: </label>
       <input
         type='text'

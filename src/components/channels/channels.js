@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './channels.css';
 
+import ProfileMenu from '../header/profile-menu/profile-menu';
 import ChannelsSetting from './channels-settings/channels-settings';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -23,39 +24,63 @@ class Channels extends Component {
     handleRoomChange(room);
   };
 
+  renderSection = rooms => {
+    if (!rooms.length) return <p>No rooms to display...</p>;
+
+    return (
+      <>
+        {rooms.map(({ room, admin }, i) => (
+          <Link style={{ textDecoration: 'none' }} to='/'>
+            <li
+              className={this.props.curRoom === room ? 'active' : ''}
+              onClick={this.handleChannelChange}
+              value={room}
+              key={i}
+            >
+              {room}
+              <ChannelsSetting room={room} />
+            </li>
+          </Link>
+        ))}
+      </>
+    );
+  };
+
   render() {
-    const { curRoom, rooms, loaded, noRooms, isAuthenticated } = this.props;
+    const {
+      rooms,
+      privateRooms,
+      loaded,
+      noRooms,
+      isAuthenticated
+    } = this.props;
     if (!isAuthenticated) return null;
 
+    // TODO add SASS / clean up css / style
     if (noRooms)
       return (
-        <ul id='ul_top_hypers'>
-          <li>There are no rooms to display, please create one</li>
+        <ul className='sidebar'>
+          <ProfileMenu />
+          <h2>There are no rooms to display, please create one</h2>
         </ul>
       );
 
     if (!loaded)
       return (
-        <ul id='ul_top_hypers'>
-          <li>Loading chat rooms...</li>
+        <ul className='sidebar'>
+          <ProfileMenu />
+          <h2>Loading rooms...</h2>
         </ul>
       );
 
     return (
-      <ul id='ul_top_hypers'>
-        {rooms.map(({ room }, i) => (
-          <li className={curRoom === room ? 'selected' : ''} key={i}>
-            <Link
-              style={{ textDecoration: 'none', color: 'black' }}
-              to='/'
-              value={room}
-              onClick={this.handleChannelChange}
-            >
-              {room}
-            </Link>
-            <ChannelsSetting room={room} />
-          </li>
-        ))}
+      // <ul id='ul_top_hypers'>
+      <ul className='sidebar'>
+        <ProfileMenu />
+        <div className='section'>Channels</div>
+        {this.renderSection(rooms)}
+        <div className='section'>Private Groups</div>
+        {this.renderSection(privateRooms)}
       </ul>
     );
   }
@@ -65,6 +90,7 @@ const mapStateToProps = ({ auth, rooms }) => {
   return {
     curRoom: rooms.room,
     rooms: rooms.rooms,
+    privateRooms: rooms.privateRooms,
     loaded: rooms.loadedRooms,
     noRooms: rooms.noRooms,
 

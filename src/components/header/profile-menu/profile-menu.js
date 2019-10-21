@@ -4,6 +4,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import '../app-header.css';
 
 import ChangeUserName from './change-user-name';
+import SVGIcon from '../../common/svg';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { exitRoom, logoutUser } from '../../../actions';
@@ -39,9 +40,10 @@ function ProfileMenu(props) {
           }}
         />
       ) : (
-        <button className='app__button' onClick={handleClick}>
+        <div className='app__profile' onClick={handleClick}>
           {userName}
-        </button>
+          <SVGIcon className='profile__icon' name='profile' width={13} />
+        </div>
       )}
       <Menu
         id='simple-menu'

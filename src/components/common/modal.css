@@ -5,6 +5,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.6);
+  overflow: auto; /* Enable scroll if needed */
 }
 
 .modal-main {
@@ -20,6 +21,7 @@
 }
 
 .display-block {
+  z-index: 999;
   display: block;
 }
 

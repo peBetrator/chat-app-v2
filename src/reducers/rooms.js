@@ -13,10 +13,28 @@ import {
   ERROR_CATCHED
 } from '../actions';
 
+const fiterRooms = (state, rooms) => {
+  const publicRooms = [];
+  const privateRooms = rooms.filter(room => {
+    if (!room.admin) {
+      publicRooms.push(room);
+      return false;
+    }
+    return true;
+  });
+
+  return {
+    ...state,
+    rooms: publicRooms,
+    privateRooms
+  };
+};
+
 export default (
   state = {
     room: '',
     rooms: [],
+    privateRooms: [],
     loadedRooms: false,
     members: [],
     loadedMembers: false,
@@ -28,10 +46,7 @@ export default (
 ) => {
   switch (action.type) {
     case FETCH_ROOMS_REQUEST:
-      return {
-        ...state,
-        rooms: action.rooms
-      };
+      return fiterRooms(state, action.rooms);
     case FETCH_ROOMS_SUCCESS:
       return {
         ...state,

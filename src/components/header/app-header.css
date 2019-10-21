@@ -1,17 +1,15 @@
 .app__header {
-  background-color: rgba(28; 18; 167; 0.836);
+  width: 100%;
+  float: right;
   padding: 5px;
   color: white;
   display: flex;
 }
 
-.app__button {
-  float: right;
-  border: 0;
-  border-radius: 3px;
-  padding: 10px 20px;
+.app__profile {
+  display: flex;
+  justify-content: space-between;
   color: black;
-  background-color: white;
   cursor: pointer;
   opacity: 0.8;
   outline: 0;
@@ -29,4 +27,8 @@
 .simple__text {
   color: black;
   text-decoration: none;
+}
+
+.profile__icon {
+  padding: 3px;
 }

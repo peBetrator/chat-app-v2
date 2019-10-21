@@ -3,46 +3,55 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import './channels-settings.css';
 
+import Confirmation from './confirm';
+import SVGIcon from '../../common/svg';
+import Modal from '../../common/modal';
 import { connect } from 'react-redux';
-import { leaveChat } from '../../../actions';
 
 function ChannelsSetting(props) {
   const { room, uid, leaveChat } = props;
   const [anchorSettings, setAnchorSetting] = React.useState(null);
+  const [confirmation, setConfirmation] = React.useState(false);
 
   const handleClick = event => {
+    event.preventDefault();
     setAnchorSetting(event.currentTarget);
   };
 
   const handleClose = () => {
-    setAnchorSetting(null);
+    setConfirmation(false);
   };
 
   return (
     // TODO create a generic component for Menu dropdown(used in profile-menu.js; channels-setting.js; member-list.js)
-    <div>
-      <span role='img' aria-label='settings' onClick={handleClick}>
-        ⚙️
-      </span>
+    <>
+      <div onClick={handleClick}>
+        <SVGIcon name='show_more_dots' width={13} />
+      </div>
       <Menu
         id='simple-menu'
         anchorEl={anchorSettings}
         keepMounted
         open={Boolean(anchorSettings)}
-        onClose={handleClose}
+        onClose={() => {
+          setAnchorSetting(null);
+        }}
       >
-        {/* <MenuItem>
-          <MemberList room={room} handleClose={handleClose} />
-        </MenuItem> */}
         <MenuItem
           onClick={() => {
-            leaveChat(room, uid);
+            setConfirmation(true);
+            setAnchorSetting(null);
           }}
         >
           Leave chat
         </MenuItem>
       </Menu>
-    </div>
+
+      {/*// TODO do smth with passing the same method to modal and component itself*/}
+      <Modal show={confirmation} handleClose={handleClose}>
+        <Confirmation room={room} handleClose={handleClose} />
+      </Modal>
+    </>
   );
 }
 
@@ -54,11 +63,4 @@ const mapStateToProps = ({ auth, rooms }) => {
   };
 };
 
-const mapDispatchToProps = {
-  leaveChat
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChannelsSetting);
+export default connect(mapStateToProps)(ChannelsSetting);
