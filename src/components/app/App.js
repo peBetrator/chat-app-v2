@@ -16,7 +16,7 @@ function App(props) {
   const { isAuthenticated, isVerifying } = props;
   return (
     <div>
-      {/* <Header /> */}
+      <Header />
       <Channels />
       <Switch>
         <Route path='/login' component={Login} />

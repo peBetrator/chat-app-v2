@@ -1,0 +1,23 @@
+.sidebar__main {
+  background-color: blanchedalmond;
+  position: fixed;
+  width: 200px;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+.sidebar__close {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+}
