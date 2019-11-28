@@ -7,25 +7,20 @@ import { leaveChat } from '../../../actions';
 function Confirmation(props) {
   const { room, uid, leaveChat, handleClose } = props;
 
+  const handleSubmit = () => {
+    leaveChat(room, uid);
+    handleClose();
+  };
+
   return (
     <div>
-      <div className='confirmation'>
+      <div className="confirmation">
         Please confirm you want to leave the channel
       </div>
-      <button
-        className='conf__submit'
-        onClick={() => {
-          leaveChat(room, uid);
-        }}
-      >
+      <button className="conf__submit" onClick={handleSubmit}>
         YES
       </button>
-      <button
-        className='conf__decline'
-        onClick={() => {
-          props.handleClose();
-        }}
-      >
+      <button className="conf__decline" onClick={handleClose}>
         NO
       </button>
     </div>
@@ -34,15 +29,12 @@ function Confirmation(props) {
 
 const mapStateToProps = ({ auth }) => {
   return {
-    uid: auth.user.uid
+    uid: auth.user.uid,
   };
 };
 
 const mapDispatchToProps = {
-  leaveChat
+  leaveChat,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Confirmation);
+export default connect(mapStateToProps, mapDispatchToProps)(Confirmation);

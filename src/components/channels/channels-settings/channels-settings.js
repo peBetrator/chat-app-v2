@@ -9,7 +9,7 @@ import Modal from '../../common/modal';
 import { connect } from 'react-redux';
 
 function ChannelsSetting(props) {
-  const { room, uid, leaveChat } = props;
+  const { room } = props;
   const [anchorSettings, setAnchorSetting] = React.useState(null);
   const [confirmation, setConfirmation] = React.useState(false);
 
@@ -26,10 +26,10 @@ function ChannelsSetting(props) {
     // TODO create a generic component for Menu dropdown(used in profile-menu.js; channels-setting.js; member-list.js)
     <>
       <div onClick={handleClick}>
-        <SVGIcon name='show_more_dots' width={13} />
+        <SVGIcon name="show_more_dots" width={13} />
       </div>
       <Menu
-        id='simple-menu'
+        id="simple-menu"
         anchorEl={anchorSettings}
         keepMounted
         open={Boolean(anchorSettings)}
@@ -55,11 +55,10 @@ function ChannelsSetting(props) {
   );
 }
 
-const mapStateToProps = ({ auth, rooms }) => {
+const mapStateToProps = ({ auth }) => {
   return {
-    uid: auth.user.uid,
     userName: auth.user.displayName,
-    email: auth.user.email
+    email: auth.user.email,
   };
 };
 

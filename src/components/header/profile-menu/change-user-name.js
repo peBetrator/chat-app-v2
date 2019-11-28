@@ -2,34 +2,36 @@ import React from 'react';
 import '../app-header.css';
 
 import { connect } from 'react-redux';
-import { changeName } from '../../../actions';
+import { changeName, changeAllRoomReferences } from '../../../actions';
 
 function ChangeUserName(props) {
+  const { uid, onChange, handleNameChange } = props;
   const [name, setName] = React.useState(props.name);
 
-  const { handleNameChange } = props;
+  const handleSubmit = e => {
+    handleNameChange(name);
+    onChange();
+    changeAllRoomReferences(props.name, name, uid);
+
+    e.preventDefault();
+  };
 
   return (
-    <div className='app__right' >
+    <div className="app__right">
       <input value={name} onChange={e => setName(e.target.value)} />
-      <button
-        onClick={e => {
-          e.preventDefault();
-          handleNameChange(name);
-          props.onChange();
-        }}
-      >
-        OK
-      </button>
+      <button onClick={handleSubmit}>OK</button>
     </div>
   );
 }
 
+function mapStateToProps({ auth }) {
+  return {
+    uid: auth.user.uid,
+  };
+}
+
 const mapDispatchToProps = {
-  handleNameChange: changeName
+  handleNameChange: changeName,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(ChangeUserName);
+export default connect(mapStateToProps, mapDispatchToProps)(ChangeUserName);

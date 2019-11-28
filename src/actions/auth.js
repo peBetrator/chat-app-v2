@@ -19,64 +19,64 @@ export const CHANGE_USERNAME_SUCCESS = 'CHANGE_USERNAME_SUCCESS';
 
 const requestLogin = () => {
   return {
-    type: LOGIN_REQUEST
+    type: LOGIN_REQUEST,
   };
 };
 const receiveLogin = user => {
   return {
     type: LOGIN_SUCCESS,
-    user
+    user,
   };
 };
 const loginError = errorMessage => {
   return {
-    type: LOGIN_FAILURE
+    type: LOGIN_FAILURE,
   };
 };
 
 const requestSignUp = () => {
   return {
-    type: SIGNUP_REQUEST
+    type: SIGNUP_REQUEST,
   };
 };
 const signUpError = errorMessage => {
   return {
-    type: SIGNUP_FAILURE
+    type: SIGNUP_FAILURE,
   };
 };
 
 const requestLogout = () => {
   return {
-    type: LOGOUT_REQUEST
+    type: LOGOUT_REQUEST,
   };
 };
 
 const receiveLogout = () => {
   return {
-    type: LOGOUT_SUCCESS
+    type: LOGOUT_SUCCESS,
   };
 };
 const logoutError = () => {
   return {
-    type: LOGOUT_FAILURE
+    type: LOGOUT_FAILURE,
   };
 };
 
 const verifyRequest = () => {
   return {
-    type: VERIFY_REQUEST
+    type: VERIFY_REQUEST,
   };
 };
 const verifySuccess = () => {
   return {
-    type: VERIFY_SUCCESS
+    type: VERIFY_SUCCESS,
   };
 };
 
 const changeUsernameSuccess = user => {
   return {
     type: CHANGE_USERNAME_SUCCESS,
-    user
+    user,
   };
 };
 
@@ -127,7 +127,7 @@ export const registerUser = (email, password) => dispatch => {
         .database()
         .ref(`users/${user.uid}`)
         .set({
-          email: email
+          email: email,
         });
     })
     .catch(error => {
@@ -137,9 +137,18 @@ export const registerUser = (email, password) => dispatch => {
 
 export const changeName = userName => dispatch => {
   const user = myFirebase.auth().currentUser;
+  const uid = user.uid;
+
   user
     .updateProfile({
-      displayName: userName
+      displayName: userName,
     })
     .then(dispatch(changeUsernameSuccess(userName)));
+
+  myFirebase
+    .database()
+    .ref(`users/${uid}/`)
+    .update({
+      username: userName,
+    });
 };

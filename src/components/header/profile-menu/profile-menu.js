@@ -22,6 +22,7 @@ function ProfileMenu(props) {
   };
 
   const handleClose = () => {
+    exitRoom();
     setAnchorEl(null);
   };
 
@@ -40,37 +41,23 @@ function ProfileMenu(props) {
           }}
         />
       ) : (
-        <div className='app__profile' onClick={handleClick}>
+        <div className="app__profile" onClick={handleClick}>
           {userName}
-          <SVGIcon className='profile__icon' name='profile' width={13} />
+          <SVGIcon className="profile__icon" name="profile" width={13} />
         </div>
       )}
       <Menu
-        id='simple-menu'
+        id="simple-menu"
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
         <MenuItem onClick={handleChangeUserName}>Change display name</MenuItem>
-        <MenuItem
-          component={Link}
-          to={'/profile'}
-          onClick={() => {
-            exitRoom();
-            handleClose();
-          }}
-        >
+        <MenuItem component={Link} to={'/profile'} onClick={handleClose}>
           My profile
         </MenuItem>
-        <MenuItem
-          component={Link}
-          to={'/channels'}
-          onClick={() => {
-            exitRoom();
-            handleClose();
-          }}
-        >
+        <MenuItem component={Link} to={'/channels'} onClick={handleClose}>
           My channels
         </MenuItem>
         <MenuItem
@@ -87,17 +74,16 @@ function ProfileMenu(props) {
 
 function mapStateToProps({ auth, rooms }) {
   return {
-    uid: auth.user.uid,
     userName: auth.user.displayName,
     email: auth.user.email,
 
-    room: rooms.room
+    room: rooms.room,
   };
 }
 
 const mapDispatchToProps = {
   exitRoom,
-  logoutUser
+  logoutUser,
 };
 
 export default connect(

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { addUserToRoom } from '../../../actions';
 
 function AddUserForm(props) {
-  const { room } = props;
+  const { room, addUserToRoom, handleClose } = props;
   const [userName, setUserName] = React.useState('');
   const [added, setAdded] = React.useState(false);
 
@@ -17,11 +17,12 @@ function AddUserForm(props) {
   const displayMessage = () => {
     setAdded(true);
     setTimeout(() => {
-      props.handleClose();
+      handleClose();
       setAdded(false);
     }, 1000);
   };
 
+  // TODO move all methods using firebase connection to separate file
   const searchUser = user => {
     const usersRef = myFirebase.database().ref('users');
 
@@ -32,7 +33,7 @@ function AddUserForm(props) {
         .once('value')
         .then(snapshot => {
           snapshot.forEach(data => {
-            props.addUserToRoom(room, data.key);
+            addUserToRoom(room, data.key);
             displayMessage();
           });
         });
@@ -42,12 +43,13 @@ function AddUserForm(props) {
         .once('value')
         .then(data => {
           if (data.exists()) {
-            props.addUserToRoom(room, user);
+            addUserToRoom(room, user);
             displayMessage();
           }
         });
   };
 
+  // TODO add and separate validations
   const validateEmail = email => {
     const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     return re.test(String(email).toLowerCase());
@@ -57,12 +59,12 @@ function AddUserForm(props) {
     <div>
       Add User <br />
       <input
-        type='text'
+        type="text"
         value={userName}
-        placeholder='UID or E-mail'
+        placeholder="UID or E-mail"
         onChange={e => setUserName(e.target.value)}
       />
-      <button value='create' onClick={handleSubmit}>
+      <button value="create" onClick={handleSubmit}>
         Search
       </button>
       <br />
@@ -75,12 +77,12 @@ const mapStateToProps = ({ auth }) => {
   return {
     userName: auth.user.displayName,
     email: auth.user.email,
-    uid: auth.user.uid
+    uid: auth.user.uid,
   };
 };
 
 const mapDispatchToProps = {
-  addUserToRoom
+  addUserToRoom,
 };
 
 export default connect(

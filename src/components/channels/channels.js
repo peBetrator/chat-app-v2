@@ -6,14 +6,14 @@ import ChannelsSetting from './channels-settings/channels-settings';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { changeRoom, getRooms } from '../../actions';
+import { formatDMTitle } from '../utils';
 
 class Channels extends Component {
   componentDidUpdate(prevProps) {
-    if (
-      this.props.uid &&
-      prevProps.isAuthenticated !== this.props.isAuthenticated
-    ) {
-      this.props.handleGetRooms(this.props.uid);
+    const { uid, isAuthenticated, getRooms } = this.props;
+
+    if (uid && prevProps.isAuthenticated !== isAuthenticated) {
+      getRooms(uid);
     }
   }
 
@@ -25,19 +25,21 @@ class Channels extends Component {
   };
 
   renderSection = rooms => {
+    const { curRoom, userName } = this.props;
+
     if (!rooms.length) return <p>No rooms to display...</p>;
 
     return (
       <>
-        {rooms.map(({ room, admin }, i) => (
-          <Link style={{ textDecoration: 'none' }} to='/'>
+        {rooms.map(({ room, DM }, i) => (
+          <Link style={{ textDecoration: 'none' }} to="/">
             <li
-              className={this.props.curRoom === room ? 'active' : ''}
+              className={curRoom === room ? 'active' : ''}
               onClick={this.handleChannelChange}
               value={room}
               key={i}
             >
-              {room}
+              {!DM ? room : formatDMTitle(room, userName)}
               <ChannelsSetting room={room} />
             </li>
           </Link>
@@ -49,17 +51,20 @@ class Channels extends Component {
   render() {
     const {
       rooms,
+      dms,
       privateRooms,
+      favoriteRooms,
       loaded,
       noRooms,
-      isAuthenticated
+      isAuthenticated,
     } = this.props;
+
+    // TODO extract auth state from channels component
     if (!isAuthenticated) return null;
 
-    // TODO add SASS / clean up css / style
     if (noRooms)
       return (
-        <ul className='sidebar'>
+        <ul className="sidebar">
           <ProfileMenu />
           <h2>There are no rooms to display, please create one</h2>
         </ul>
@@ -67,20 +72,32 @@ class Channels extends Component {
 
     if (!loaded)
       return (
-        <ul className='sidebar'>
+        <ul className="sidebar">
           <ProfileMenu />
           <h2>Loading rooms...</h2>
         </ul>
       );
 
     return (
-      // <ul id='ul_top_hypers'>
-      <ul className='sidebar'>
+      <ul className="sidebar">
         <ProfileMenu />
-        <div className='section'>Channels</div>
+        {!!favoriteRooms.length && (
+          <div>
+            <div className="section">Favorite</div>
+            {this.renderSection(favoriteRooms)}
+          </div>
+        )}
+        <div className="section">Channels</div>
         {this.renderSection(rooms)}
-        <div className='section'>Private Groups</div>
+        <div className="section">Private Groups</div>
         {this.renderSection(privateRooms)}
+
+        {!!dms.length && (
+          <div>
+            <div className="section">Direct Messages</div>
+            {this.renderSection(dms)}
+          </div>
+        )}
       </ul>
     );
   }
@@ -90,18 +107,21 @@ const mapStateToProps = ({ auth, rooms }) => {
   return {
     curRoom: rooms.room,
     rooms: rooms.rooms,
+    dms: rooms.dms,
     privateRooms: rooms.privateRooms,
+    favoriteRooms: rooms.favoriteRooms,
     loaded: rooms.loadedRooms,
     noRooms: rooms.noRooms,
 
     isAuthenticated: auth.isAuthenticated,
-    uid: auth.user.uid
+    uid: auth.user.uid,
+    userName: auth.user.displayName,
   };
 };
 
 const mapDispatchToProps = {
   handleRoomChange: changeRoom,
-  handleGetRooms: getRooms
+  getRooms,
 };
 
 export default connect(

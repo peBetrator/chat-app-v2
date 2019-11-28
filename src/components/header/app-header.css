@@ -1,9 +1,17 @@
 .app__header {
   width: 100%;
-  float: right;
-  padding: 5px;
-  color: white;
+  /* color: white; */
   display: flex;
+  position: absolute;
+  justify-content: center;
+}
+
+.header__favorite {
+  cursor: pointer;
+  padding-right: 5px;
+}
+.header__favorite:hover {
+  color: #d6cd27;
 }
 
 .app__profile {

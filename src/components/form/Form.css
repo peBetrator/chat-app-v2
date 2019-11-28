@@ -1,12 +1,11 @@
 .form {
-  /* display: flex; */
-  /* display: inline-block; */
-  flex-wrap: nowrap;
+  display: flex;
+  position: relative;
   flex-direction: column;
-  width: 100%;
-  max-width: 600px;
+  width: 50%;
   padding: 20px;
   margin: 0 auto;
+  top: 15px;
 }
 
 .form__row {

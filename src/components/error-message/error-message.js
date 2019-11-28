@@ -4,19 +4,13 @@ import { connect } from 'react-redux';
 import { clearError } from '../../actions';
 
 function ErrorMessage(props) {
-  return (
-    <div
-      onClick={() => {
-        props.clearError();
-      }}
-    >
-      {props.error.message}
-    </div>
-  );
+  const { clearError } = props;
+
+  return <div onClick={clearError}>{props.error.message}</div>;
 }
 
 const mapDispatchToProps = {
-  clearError
+  clearError,
 };
 
 export default connect(

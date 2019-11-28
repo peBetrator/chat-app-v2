@@ -19,11 +19,10 @@ class AddChannelForm extends Component {
   handleSubmit = e => {
     const { uid, createRoom, searchRoom, getRooms } = this.props;
     if (e.currentTarget.value === 'create') {
-      createRoom({ room: this.state.name, uid });
+      createRoom(this.state.name, uid);
       this.props.handleClose();
     }
-    if (e.currentTarget.value === 'search')
-      searchRoom({ room: this.state.name, uid });
+    if (e.currentTarget.value === 'search') searchRoom(this.state.name, uid);
 
     getRooms(uid);
     this.setState({ name: '' });
@@ -32,28 +31,28 @@ class AddChannelForm extends Component {
   render() {
     const { roomFound } = this.props;
     return (
-      <div className='row'>
-        <div className='column'>
+      <div className="row">
+        <div className="column">
           Create <br />
           <input
-            type='text'
+            type="text"
             value={this.state.name}
-            placeholder='channel name'
+            placeholder="channel name"
             onChange={e => this.setState({ name: e.target.value })}
           />
-          <button value='create' onClick={this.handleSubmit}>
+          <button value="create" onClick={this.handleSubmit}>
             Create
           </button>
         </div>
-        <div className='column'>
+        <div className="column">
           or Search <br />
           <input
-            type='text'
+            type="text"
             value={this.state.name}
-            placeholder='channel name'
+            placeholder="channel name"
             onChange={e => this.setState({ name: e.target.value })}
           />
-          <button value='search' onClick={this.handleSubmit}>
+          <button value="search" onClick={this.handleSubmit}>
             Search
           </button>
           <br />
@@ -70,14 +69,14 @@ const mapStateToProps = ({ auth, rooms }) => {
     email: auth.user.email,
     uid: auth.user.uid,
 
-    roomFound: rooms.roomFound
+    roomFound: rooms.roomFound,
   };
 };
 
 const mapDispatchToProps = {
   createRoom,
   searchRoom,
-  getRooms
+  getRooms,
 };
 
 export default connect(

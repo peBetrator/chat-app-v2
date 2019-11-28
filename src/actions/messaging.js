@@ -9,20 +9,20 @@ export const SEND_MESSAGE_REQUEST = 'SEND_MESSAGE_REQUEST';
 const fetchMessages = room => {
   return {
     type: FETCH_MESSAGES_REQUEST,
-    room
+    room,
   };
 };
 const fetchMessagesSuccess = messages => {
   return {
     type: FETCH_MESSAGES_SUCCESS,
-    messages
+    messages,
   };
 };
 
 const sendMessageRequest = message => {
   return {
     type: SEND_MESSAGE_REQUEST,
-    message
+    message,
   };
 };
 
@@ -41,7 +41,7 @@ export const sendMessage = ({ room, user, message, uid }) => dispatch => {
     uid,
     name: user,
     message,
-    timestamp: +new Date()
+    timestamp: +new Date(),
   };
   const messageRef = myFirebase.database().ref(`room-messages/${room}`);
 

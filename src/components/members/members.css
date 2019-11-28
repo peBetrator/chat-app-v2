@@ -1,6 +1,8 @@
 .right {
-  float: right;
   width: 300px;
+  position: rl;
+  flex-direction: column;
+  display: flex;
   padding: 10px;
 }
 
@@ -10,4 +12,8 @@
 
 .hide {
   display: none;
+}
+
+.members {
+  cursor: pointer;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import './channels-table.css';
 
+import Confirmation from '../../channels/channels-settings/confirm';
 import Modal from '../../common/modal';
 import ErrorMessage from '../../error-message/error-message';
 import AddChannelForm from './add-channel';
@@ -10,7 +11,7 @@ import {
   makeRoomPrivate,
   makeRoomPublic,
   getRooms,
-  leaveChat
+  leaveChat,
 } from '../../../actions';
 
 function ChannelsTable(props) {
@@ -21,16 +22,17 @@ function ChannelsTable(props) {
     getRooms,
     makeRoomPublic,
     makeRoomPrivate,
-    leaveChat
   } = props;
 
   const [showChannel, setShowC] = React.useState(false);
   const [showUser, setShowU] = React.useState(false);
+  const [confirmation, setConfirmation] = React.useState(false);
   const [curRoom, setCurRoom] = React.useState('');
 
   const handleClose = () => {
     setShowC(false);
     setShowU(false);
+    setConfirmation(false);
   };
 
   const handleRights = (room, isPrivate) => {
@@ -61,14 +63,21 @@ function ChannelsTable(props) {
           >
             {isPrivate ? 'Make Public' : 'Make Private'}
           </button>
-          <button onClick={() => leaveChat(room, uid)}>Leave chat</button>
+          <button
+            onClick={() => {
+              setConfirmation(true);
+              setCurRoom(room);
+            }}
+          >
+            Leave chat
+          </button>
         </td>
       </tr>
     );
   };
 
   return (
-    <div className='channel__table'>
+    <div className="channel__table">
       <h2>Manage Your Channels</h2>
       <table>
         <thead>
@@ -81,7 +90,7 @@ function ChannelsTable(props) {
         <tbody>
           {rooms.map(renderRow)}
           <tr>
-            <td colSpan='3'>
+            <td colSpan="3">
               {!errorMsg || <ErrorMessage error={errorMsg} />}
               <button
                 onClick={() => {
@@ -94,6 +103,7 @@ function ChannelsTable(props) {
           </tr>
         </tbody>
       </table>
+
       <Modal show={showChannel || showUser} handleClose={handleClose}>
         {showChannel ? (
           <AddChannelForm handleClose={handleClose} />
@@ -101,16 +111,20 @@ function ChannelsTable(props) {
           <AddUserForm room={curRoom} handleClose={handleClose} />
         )}
       </Modal>
+
+      <Modal show={confirmation} handleClose={handleClose}>
+        <Confirmation room={curRoom} handleClose={handleClose} />
+      </Modal>
     </div>
   );
 }
 
 const mapStateToProps = ({ auth, rooms }) => {
   return {
-    rooms: rooms.rooms,
+    rooms: [...rooms.rooms, ...rooms.privateRooms],
     errorMsg: rooms.errorMsg,
 
-    uid: auth.user.uid
+    uid: auth.user.uid,
   };
 };
 
@@ -118,7 +132,7 @@ const mapDispatchToProps = {
   makeRoomPrivate,
   makeRoomPublic,
   getRooms,
-  leaveChat
+  leaveChat,
 };
 
 export default connect(

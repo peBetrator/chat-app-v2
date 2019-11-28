@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { getMembers } from '../../actions';
 
 function Members(props) {
-  const { uid, room, rooms, members, loadedMembers } = props;
+  const { uid, room, members, loadedMembers } = props;
   const [viewData, setViewData] = React.useState(false);
 
   useEffect(() => {
@@ -30,14 +30,19 @@ function Members(props) {
   };
 
   return (
-    <div className='right'>
+    <div className="right">
       {room && <h3>Chat Members</h3>}
       {room && !loadedMembers ? (
         <div>Loading members</div>
       ) : (
-        members.map((member, i) => (
+        members.map(({ uid, email, userName }, i) => (
           <div key={i}>
-            <MemberData member={member} view={viewData} />
+            <MemberData
+              // TODO extract members data to redux store
+              view={viewData}
+              displayName={userName || email}
+              uid={uid}
+            />
           </div>
         ))
       )}
@@ -52,16 +57,12 @@ const mapStateToProps = ({ auth, rooms }) => {
     members: rooms.members,
     loadedMembers: rooms.loadedMembers,
 
-    rooms: rooms.rooms,
-    room: rooms.room
+    room: rooms.room,
   };
 };
 
 const mapDispatchToProps = {
-  getMembers
+  getMembers,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Members);
+export default connect(mapStateToProps, mapDispatchToProps)(Members);
