@@ -1,4 +1,12 @@
 .profile__table {
-    margin-left: 200px;
-    padding: 1px 16px;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  margin-left: 200px;
+  padding: 1px 16px;
+}
+
+.separator {
+  height: 1px;
+  width: 100%;
+}

@@ -9,8 +9,10 @@ import {
   LOGOUT_FAILURE,
   VERIFY_REQUEST,
   VERIFY_SUCCESS,
-  CHANGE_USERNAME_SUCCESS
+  CHANGE_USERNAME_SUCCESS,
 } from '../actions/';
+
+import { UPDATE_PROFILE_IMG_URL } from '../actions/types';
 
 export default (
   state = {
@@ -22,7 +24,7 @@ export default (
     signUpError: false,
     logoutError: false,
     isAuthenticated: false,
-    user: {}
+    user: {},
   },
   action
 ) => {
@@ -31,21 +33,21 @@ export default (
       return {
         ...state,
         isLoggingIn: true,
-        loginError: false
+        loginError: false,
       };
     case LOGIN_SUCCESS:
       return {
         ...state,
         isLoggingIn: false,
         isAuthenticated: true,
-        user: action.user
+        user: action.user,
       };
     case LOGIN_FAILURE:
       return {
         ...state,
         isLoggingIn: false,
         isAuthenticated: false,
-        loginError: true
+        loginError: true,
       };
 
     case SIGNUP_REQUEST:
@@ -53,52 +55,58 @@ export default (
         ...state,
         isSigningUp: true,
         isLoggingIn: true,
-        signUpError: false
+        signUpError: false,
       };
     case SIGNUP_FAILURE:
       return {
         ...state,
         isSigningUp: false,
         isAuthenticated: false,
-        signUpError: true
+        signUpError: true,
       };
 
     case LOGOUT_REQUEST:
       return {
         ...state,
         isLoggingOut: true,
-        logoutError: false
+        logoutError: false,
       };
     case LOGOUT_SUCCESS:
       return {
         ...state,
         isLoggingOut: false,
         isAuthenticated: false,
-        user: {}
+        user: {},
       };
     case LOGOUT_FAILURE:
       return {
         ...state,
         isLoggingOut: false,
-        logoutError: true
+        logoutError: true,
       };
 
     case VERIFY_REQUEST:
       return {
         ...state,
         isVerifying: true,
-        verifyingError: false
+        verifyingError: false,
       };
     case VERIFY_SUCCESS:
       return {
         ...state,
-        isVerifying: false
+        isVerifying: false,
       };
 
     case CHANGE_USERNAME_SUCCESS:
       return {
         ...state,
-        user: { ...state.user, displayName: action.user }
+        user: { ...state.user, displayName: action.user },
+      };
+
+    case UPDATE_PROFILE_IMG_URL:
+      return {
+        ...state,
+        user: { ...state.user, photoURL: action.payload },
       };
 
     default:

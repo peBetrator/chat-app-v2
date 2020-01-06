@@ -1,19 +1,35 @@
 import React from 'react';
 import './manage-profile.css';
 
+import ProfileImage from '../../common/profile-image';
+
 import { connect } from 'react-redux';
-import { changeName } from '../../../actions';
+import { changeName, changeProfileImg } from '../../../actions';
 
 function Profile(props) {
-  const { handleNameChange } = props;
-  const [name, setName] = React.useState(props.userName);
+  const { userName, uid, photoURI } = props;
+
+  const [name, setName] = React.useState(userName);
+  const [profileImg, setProfileImg] = React.useState();
   const [isEdit, setEdit] = React.useState(false);
 
   const handleSubmit = e => {
-    if (isEdit) handleNameChange(name);
+    const { handleNameChange, handleProfileImgChange } = props;
+
+    if (isEdit) {
+      handleNameChange(name);
+      if (profileImg) {
+        // TODO: add validations on client side
+        handleProfileImgChange(profileImg);
+      }
+    }
     setEdit(!isEdit);
 
     e.preventDefault();
+  };
+
+  const updateProfileImg = e => {
+    setProfileImg(e.target.files[0]);
   };
 
   return (
@@ -27,9 +43,14 @@ function Profile(props) {
         onChange={e => setName(e.target.value)}
         disabled={!isEdit}
       />
-      <br />
+      <span className="separator" />
       <label>UID: </label>
-      <input type="text" value={props.uid} disabled />
+      <input type="text" value={uid} disabled />
+      <span className="separator" />
+      <ProfileImage imageURI={photoURI} />
+      <span className="separator" />
+      <input type="file" disabled={!isEdit} onChange={updateProfileImg} />
+      <span className="separator" />
       <button onClick={handleSubmit}>{isEdit ? 'Save' : 'Edit profile'}</button>
     </form>
   );
@@ -38,16 +59,14 @@ function Profile(props) {
 const mapStateToProps = ({ auth }) => {
   return {
     userName: auth.user.displayName,
-    email: auth.user.email,
     uid: auth.user.uid,
+    photoURI: auth.user.photoURL,
   };
 };
 
 const mapDispatchToProps = {
   handleNameChange: changeName,
+  handleProfileImgChange: changeProfileImg,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Profile);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

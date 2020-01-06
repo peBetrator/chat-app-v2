@@ -1,16 +1,16 @@
 import React from 'react';
-import './members.css';
 import { connect } from 'react-redux';
+import './members.css';
 
 import Confirmation from '../channels/channels-settings/confirm';
 import Modal from '../common/modal';
 import Sidebar from '../common/sidebar';
+
 import UserProfile from '../sidebars/user-profile';
 import UserRights from '../sidebars/user-rights';
 
 function MemberData(props) {
-  const { uid, displayName, room, view } = props;
-  const [isHidden, setIsHidden] = React.useState(true);
+  const { uid, displayName, id, isSelected, room, view, select } = props;
   const [showUserRights, setShowRights] = React.useState(false);
   const [showUserProfile, setShowProfile] = React.useState(false);
   const [confirmation, setConfirmation] = React.useState(false);
@@ -25,12 +25,12 @@ function MemberData(props) {
     <div className="members">
       <div
         onClick={() => {
-          setIsHidden(!isHidden);
+          isSelected ? select(-1) : select(id);
         }}
       >
         {displayName}
       </div>
-      <div className={isHidden ? 'hide' : 'display'}>
+      <div className={!isSelected ? 'hide' : 'display'}>
         <ul>
           <li
             onClick={() => {

@@ -20,11 +20,35 @@
   border-radius: 4px;
 }
 
+.sidebar__main {
+  background-color: blanchedalmond;
+  position: fixed;
+  width: 200px;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+}
+
+.sidebar__close {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+}
+
+.display-none {
+  display: none;
+}
+
 .display-block {
   z-index: 999;
   display: block;
 }
 
-.display-none {
-  display: none;
+.show {
+  display: block;
+}
+
+.circular__square {
+  border-radius: 50%;
 }

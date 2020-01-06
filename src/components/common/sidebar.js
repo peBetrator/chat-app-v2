@@ -1,5 +1,5 @@
 import React from 'react';
-import './sidebar.css';
+import './index.css';
 
 import SVGIcon from './svg';
 
@@ -7,7 +7,7 @@ function Sidebar(props) {
   const { handleClose } = props;
   const showHideClassName = props.show
     ? 'sidebar__main show'
-    : 'sidebar__main hide';
+    : 'sidebar__main display-none';
 
   return (
     <div className={showHideClassName}>

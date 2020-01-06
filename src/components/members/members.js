@@ -1,21 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { myFirebase } from '../../firebase/firebase';
 import './members.css';
 
-import MemberData from './member-data';
-import { connect } from 'react-redux';
 import { getMembers } from '../../actions';
+import MemberData from './member-data';
 
 function Members(props) {
   const { uid, room, members, loadedMembers } = props;
-  const [viewData, setViewData] = React.useState(false);
+  const [viewData, setViewData] = useState(false);
+  const [selectedMember, setSelected] = useState(-1);
 
   useEffect(() => {
     setViewData(false);
+    setSelected(-1);
     props.getMembers(room);
 
     isAdmin(uid, room);
   }, [room]);
+
+  const selectMember = index => {
+    setSelected(index);
+  };
 
   const isAdmin = (uid, room) => {
     myFirebase
@@ -39,6 +45,9 @@ function Members(props) {
           <div key={i}>
             <MemberData
               // TODO extract members data to redux store
+              isSelected={selectedMember === i}
+              select={selectMember}
+              id={i}
               view={viewData}
               displayName={userName || email}
               uid={uid}
