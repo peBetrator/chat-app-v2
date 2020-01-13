@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../app-header.css';
 
 import { connect } from 'react-redux';
-import { changeName, changeAllRoomReferences } from '../../../actions';
+import { changeName } from '../../../actions';
 
 function ChangeUserName(props) {
-  const { uid, onChange, handleNameChange } = props;
-  const [name, setName] = React.useState(props.name);
+  const [name, setName] = useState(props.name);
 
   const handleSubmit = e => {
+    const { onChange, handleNameChange } = props;
+
     handleNameChange(name);
     onChange();
-    changeAllRoomReferences(props.name, name, uid);
 
     e.preventDefault();
   };
@@ -24,14 +24,8 @@ function ChangeUserName(props) {
   );
 }
 
-function mapStateToProps({ auth }) {
-  return {
-    uid: auth.user.uid,
-  };
-}
-
 const mapDispatchToProps = {
   handleNameChange: changeName,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChangeUserName);
+export default connect(null, mapDispatchToProps)(ChangeUserName);

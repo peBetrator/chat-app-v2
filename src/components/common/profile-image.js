@@ -15,11 +15,11 @@ class ProfileImage extends Component {
   }
 
   handleImageLoaded() {
-    this.setState({ loaded: true });
+    this.setState({ loaded: true, hasError: false });
   }
 
   handleImageErrored() {
-    this.setState({ hasError: true });
+    this.setState({ loaded: false, hasError: true });
   }
 
   render() {

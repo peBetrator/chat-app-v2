@@ -48,3 +48,11 @@ export const sendMessage = ({ room, user, message, uid }) => dispatch => {
   messageRef.push(newMessage);
   dispatch(sendMessageRequest(message));
 };
+
+export const getProfilePicUrl = uid => {
+  const profileRef = myFirebase.database().ref(`users/${uid}/photoURL`);
+
+  return profileRef.once('value').then(profileSnap => {
+    if (profileSnap.exists()) return profileSnap.val();
+  });
+};

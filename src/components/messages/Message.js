@@ -1,26 +1,47 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './message.css';
 
 import { connect } from 'react-redux';
+import { getProfilePicUrl } from '../../actions';
 
-function Message(props) {
-  const stateUID = props.uid;
-  const { uid, name, message, timestamp } = props.message;
-  const time = new Date(timestamp).toLocaleTimeString();
+import ProfileImage from '../common/profile-image';
 
-  return (
-    <div className={`message ${stateUID === uid ? 'me' : 'other'}`}>
-      <span className='message__author'>
-        {name} ({time}):
-      </span>
-      {message}
-    </div>
-  );
+class Message extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      profileImg: '',
+    };
+  }
+
+  componentDidMount() {
+    const { uid } = this.props.message;
+
+    getProfilePicUrl(uid).then(url => this.setState({ profileImg: url }));
+  }
+
+  render() {
+    const { profileImg } = this.state;
+    const stateUID = this.props.uid;
+    const { uid, name, message, timestamp } = this.props.message;
+    const time = new Date(timestamp).toLocaleTimeString();
+
+    return (
+      <div className={`message ${stateUID === uid ? 'me' : 'other'}`}>
+        <ProfileImage imageURI={profileImg} />
+        <span className="message__author">
+          {name} ({time}):
+        </span>
+        {message}
+      </div>
+    );
+  }
 }
 
 function mapStateToProps({ auth }) {
   return {
-    uid: auth.user.uid
+    uid: auth.user.uid,
   };
 }
 

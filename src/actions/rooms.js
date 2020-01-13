@@ -205,7 +205,7 @@ export const createDM = (room, { uid, dmuid }) => dispatch => {
   myFirebase
     .database()
     .ref(`room-metadata/${room}`)
-    .update({ createdByUser: uid, room })
+    .update({ room, createdByUser: uid })
     .then(
       () => {
         const profilePaths = {};
@@ -263,44 +263,12 @@ export const handleUserRights = (room, uid) => dispatch => {
   });
 };
 
-// TODO finish all the logic
-export const changeAllRoomReferences = (oldName, newName, uid) => {
-  const roomsRef = myFirebase.database().ref(`users/${uid}/rooms`);
+export const getDmRoomTitle = uid => {
+  const userRef = myFirebase.database().ref(`users/${uid}/username`);
 
-  roomsRef.once('value').then(roomSnapshot => {
-    if (roomSnapshot.exists()) {
-      const rooms = Object.values(roomSnapshot.val());
-      const roomReferences = [];
-
-      rooms.forEach(({ room, DM }) => {
-        if (DM && DM === true) roomReferences.push(room);
-      });
-
-      if (!!roomReferences.length) {
-        roomReferences.forEach(room => {
-          const roomDataRef = myFirebase
-            .database()
-            .ref(`room-metadata/${room}`);
-          let dataToRemove;
-
-          roomsRef
-            .child(room)
-            .once('value')
-            .then(data => {
-              dataToRemove = data.val();
-              const newTitle = room.replace(oldName, newName);
-
-              roomsRef
-                .child(newTitle)
-                .set({ ...dataToRemove, room: newTitle })
-                .then(() => {
-                  roomsRef.child(room).remove();
-                });
-            });
-
-          roomDataRef.once('value').then(metadataSnap => {});
-        });
-      }
+  return userRef.once('value').then(userSnapshot => {
+    if (userSnapshot.exists()) {
+      return userSnapshot.val();
     }
   });
 };

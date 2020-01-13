@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import './channels.css';
 
-import ProfileMenu from '../header/profile-menu/profile-menu';
-import ChannelsSetting from './channels-settings/channels-settings';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { changeRoom, getRooms } from '../../actions';
-import { formatDMTitle } from '../utils';
+import { getRooms } from '../../actions';
+
+import Room from './room';
+import ProfileMenu from '../header/profile-menu/profile-menu';
 
 class Channels extends Component {
   componentDidUpdate(prevProps) {
@@ -17,32 +16,13 @@ class Channels extends Component {
     }
   }
 
-  handleChannelChange = e => {
-    const { handleRoomChange } = this.props;
-    const room = e.currentTarget.getAttribute('value');
-
-    handleRoomChange(room);
-  };
-
   renderSection = rooms => {
-    const { curRoom, userName } = this.props;
-
     if (!rooms.length) return <p>No rooms to display...</p>;
 
     return (
       <>
-        {rooms.map(({ room, DM }, i) => (
-          <Link style={{ textDecoration: 'none' }} to="/">
-            <li
-              className={curRoom === room ? 'active' : ''}
-              onClick={this.handleChannelChange}
-              value={room}
-              key={i}
-            >
-              {!DM ? room : formatDMTitle(room, userName)}
-              <ChannelsSetting room={room} />
-            </li>
-          </Link>
+        {rooms.map((room, i) => (
+          <Room roomData={room} key={i} />
         ))}
       </>
     );
@@ -105,7 +85,6 @@ class Channels extends Component {
 
 const mapStateToProps = ({ auth, rooms }) => {
   return {
-    curRoom: rooms.room,
     rooms: rooms.rooms,
     dms: rooms.dms,
     privateRooms: rooms.privateRooms,
@@ -120,11 +99,7 @@ const mapStateToProps = ({ auth, rooms }) => {
 };
 
 const mapDispatchToProps = {
-  handleRoomChange: changeRoom,
   getRooms,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Channels);
+export default connect(mapStateToProps, mapDispatchToProps)(Channels);

@@ -6,13 +6,13 @@ import { createDM } from '../../actions';
 import { buildRoomTitle } from '../utils';
 
 function UserProfile(props) {
-  const { myUID, uid, myName, name, myEmail, createDM } = props;
+  const { myUID, uid, createDM } = props;
   const handleDM = () => {
     const uids = {
       uid: myUID,
       dmuid: uid,
     };
-    const room = buildRoomTitle(myName || myEmail, name);
+    const room = buildRoomTitle(uids.uid, uids.dmuid);
 
     createDM(room, uids);
   };
@@ -38,7 +38,4 @@ const mapDispatchToProps = {
   createDM,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);
