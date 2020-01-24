@@ -1,24 +1,31 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useReducer } from 'react';
 import './members.css';
+
+import { connect } from 'react-redux';
 
 import Confirmation from '../channels/channels-settings/confirm';
 import Modal from '../common/modal';
 import Sidebar from '../common/sidebar';
 
 import UserProfile from '../sidebars/user-profile';
-import UserRights from '../sidebars/user-rights';
+
+const initSidebar = {
+  showUserProfile: false,
+  confirmation: false,
+};
 
 function MemberData(props) {
+  const [sidebar, setSidebar] = useReducer(
+    (sidebar, details) => ({
+      ...sidebar,
+      ...details,
+    }),
+    initSidebar
+  );
   const { uid, displayName, id, isSelected, room, view, select } = props;
-  const [showUserRights, setShowRights] = React.useState(false);
-  const [showUserProfile, setShowProfile] = React.useState(false);
-  const [confirmation, setConfirmation] = React.useState(false);
 
   const handleClose = () => {
-    setConfirmation(false);
-    setShowRights(false);
-    setShowProfile(false);
+    setSidebar(initSidebar);
   };
 
   return (
@@ -35,7 +42,7 @@ function MemberData(props) {
           <li
             onClick={() => {
               handleClose();
-              setShowProfile(true);
+              setSidebar({ showUserProfile: true });
             }}
           >
             View profile
@@ -43,16 +50,7 @@ function MemberData(props) {
           <li
             className={!view ? 'hide' : ''}
             onClick={() => {
-              handleClose();
-              setShowRights(true);
-            }}
-          >
-            Set rights
-          </li>
-          <li
-            className={!view ? 'hide' : ''}
-            onClick={() => {
-              setConfirmation(true);
+              setSidebar({ confirmation: true });
             }}
           >
             Remove
@@ -60,13 +58,10 @@ function MemberData(props) {
         </ul>
       </div>
 
-      <Sidebar show={showUserRights} handleClose={handleClose}>
-        <UserRights uid={uid} />
+      <Sidebar show={sidebar.showUserProfile} handleClose={handleClose}>
+        <UserProfile uid={uid} />
       </Sidebar>
-      <Sidebar show={showUserProfile} handleClose={handleClose}>
-        <UserProfile uid={uid} name={displayName} />
-      </Sidebar>
-      <Modal show={confirmation} handleClose={handleClose}>
+      <Modal show={sidebar.confirmation} handleClose={handleClose}>
         <Confirmation room={room} handleClose={handleClose} />
       </Modal>
     </div>

@@ -1,11 +1,6 @@
-import React from 'react';
+import React, { useState, useReducer } from 'react';
 import './channels-table.css';
 
-import Confirmation from '../../channels/channels-settings/confirm';
-import Modal from '../../common/modal';
-import ErrorMessage from '../../error-message/error-message';
-import AddChannelForm from './add-channel';
-import AddUserForm from './add-user';
 import { connect } from 'react-redux';
 import {
   makeRoomPrivate,
@@ -14,28 +9,34 @@ import {
   leaveChat,
 } from '../../../actions';
 
-function ChannelsTable(props) {
-  const {
-    rooms,
-    uid,
-    errorMsg,
-    getRooms,
-    makeRoomPublic,
-    makeRoomPrivate,
-  } = props;
+import Modal from '../../common/modal';
+import Confirmation from '../../channels/channels-settings/confirm';
+import ErrorMessage from '../../error-message/error-message';
+import AddChannelForm from './add-channel';
+import AddUserForm from './add-user';
 
-  const [showChannel, setShowC] = React.useState(false);
-  const [showUser, setShowU] = React.useState(false);
-  const [confirmation, setConfirmation] = React.useState(false);
-  const [curRoom, setCurRoom] = React.useState('');
+const initModals = {
+  showUser: false,
+  showChannel: false,
+  confirmation: false,
+};
+
+function ChannelsTable(props) {
+  const [curRoom, setCurRoom] = useState('');
+  const [modals, setModals] = useReducer(
+    (modals, details) => ({ ...modals, ...details }),
+    initModals
+  );
+
+  const { rooms, uid, errorMsg } = props;
 
   const handleClose = () => {
-    setShowC(false);
-    setShowU(false);
-    setConfirmation(false);
+    setModals(initModals);
   };
 
   const handleRights = (room, isPrivate) => {
+    const { getRooms, makeRoomPublic, makeRoomPrivate } = props;
+
     if (!isPrivate) makeRoomPrivate({ room, uid });
     else makeRoomPublic({ room, uid });
     getRooms(uid);
@@ -49,7 +50,7 @@ function ChannelsTable(props) {
         <td>
           <button
             onClick={() => {
-              setShowU(true);
+              setModals({ showUser: true });
               setCurRoom(room);
             }}
           >
@@ -65,7 +66,7 @@ function ChannelsTable(props) {
           </button>
           <button
             onClick={() => {
-              setConfirmation(true);
+              setModals({ confirmation: true });
               setCurRoom(room);
             }}
           >
@@ -94,7 +95,7 @@ function ChannelsTable(props) {
               {!errorMsg || <ErrorMessage error={errorMsg} />}
               <button
                 onClick={() => {
-                  setShowC(true);
+                  setModals({ showChannel: true });
                 }}
               >
                 Add room...
@@ -104,15 +105,18 @@ function ChannelsTable(props) {
         </tbody>
       </table>
 
-      <Modal show={showChannel || showUser} handleClose={handleClose}>
-        {showChannel ? (
+      <Modal
+        show={modals.showChannel || modals.showUser}
+        handleClose={handleClose}
+      >
+        {modals.showChannel ? (
           <AddChannelForm handleClose={handleClose} />
         ) : (
           <AddUserForm room={curRoom} handleClose={handleClose} />
         )}
       </Modal>
 
-      <Modal show={confirmation} handleClose={handleClose}>
+      <Modal show={modals.confirmation} handleClose={handleClose}>
         <Confirmation room={curRoom} handleClose={handleClose} />
       </Modal>
     </div>
@@ -121,7 +125,7 @@ function ChannelsTable(props) {
 
 const mapStateToProps = ({ auth, rooms }) => {
   return {
-    rooms: [...rooms.rooms, ...rooms.privateRooms],
+    rooms: [...rooms.favoriteRooms, ...rooms.rooms, ...rooms.privateRooms],
     errorMsg: rooms.errorMsg,
 
     uid: auth.user.uid,
@@ -135,7 +139,4 @@ const mapDispatchToProps = {
   leaveChat,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChannelsTable);
+export default connect(mapStateToProps, mapDispatchToProps)(ChannelsTable);

@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { handleUserRights } from '../../actions';
-import { myFirebase } from '../../firebase/firebase';
 
 import { connect } from 'react-redux';
+import { getUserRights } from '../../actions';
 
 function UserRights(props) {
   const [isModerator, setModerator] = useState(false);
   const { room, uid } = props;
 
   useEffect(() => {
-    getUserRights();
-  }, []);
-
-  const getUserRights = () => {
-    const roomRef = myFirebase
-      .database()
-      .ref(`room-metadata/${room}/moderators/${uid}`);
-
-    roomRef.once('value').then(roomSnapshot => {
-      if (roomSnapshot.exists()) {
-        setModerator(true);
-      } else setModerator(false);
-    });
-  };
+    getUserRights(room, uid).then(right => setModerator(right));
+  }, [uid]);
 
   const handleRightSelect = () => {
     const { handleUserRights } = props;
@@ -33,7 +21,7 @@ function UserRights(props) {
 
   return (
     <div>
-      Set right to 
+      Set right to
       <button onClick={handleRightSelect}>
         {isModerator ? 'simple user' : 'moderator'}
       </button>

@@ -7,15 +7,18 @@ import { getMembers } from '../../actions';
 import MemberData from './member-data';
 
 function Members(props) {
-  const { uid, room, members, loadedMembers } = props;
   const [viewData, setViewData] = useState(false);
   const [selectedMember, setSelected] = useState(-1);
 
+  const { uid, room, members, loadedMembers } = props;
+
   useEffect(() => {
+    const { getMembers } = props;
+
     setViewData(false);
     setSelected(-1);
-    props.getMembers(room);
 
+    getMembers(room);
     isAdmin(uid, room);
   }, [room]);
 

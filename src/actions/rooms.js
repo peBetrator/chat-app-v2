@@ -273,6 +273,16 @@ export const getDmRoomTitle = uid => {
   });
 };
 
+export const getUserRights = (room, uid) => {
+  const roomRef = myFirebase
+    .database()
+    .ref(`room-metadata/${room}/moderators/${uid}`);
+
+  return roomRef.once('value').then(roomSnapshot => {
+    return roomSnapshot.exists();
+  });
+};
+
 export const searchRoom = (room, uid) => dispatch => {
   const roomRef = myFirebase.database().ref(`room-metadata/${room}/`);
 

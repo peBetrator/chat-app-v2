@@ -53,6 +53,6 @@ export const getProfilePicUrl = uid => {
   const profileRef = myFirebase.database().ref(`users/${uid}/photoURL`);
 
   return profileRef.once('value').then(profileSnap => {
-    if (profileSnap.exists()) return profileSnap.val();
+    return profileSnap.exists() ? profileSnap.val() : null;
   });
 };

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import './form.css';
+
 import { connect } from 'react-redux';
 import { getMessages, sendMessage } from '../../actions';
-
-import './form.css';
 
 import Message from '../messages/message';
 
@@ -10,14 +10,16 @@ class Form extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: ''
+      message: '',
     };
 
     this.listenMessages();
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.room !== this.props.room) {
+    const { room } = this.props;
+
+    if (prevProps.room !== room) {
       this.listenMessages();
     }
   }
@@ -32,7 +34,7 @@ class Form extends Component {
       user: userName || email,
       message: this.state.message,
       room,
-      uid
+      uid,
     };
     sendMessage(messageObject);
     this.setState({ message: '' });
@@ -49,24 +51,26 @@ class Form extends Component {
   };
 
   render() {
-    const { messages } = this.props;
+    const { messages, loaded } = this.props;
     return (
-      <div className='form'>
-        <div className='form__message'>
-          {messages.map((item, index) => (
-            <Message key={index} message={item} />
-          ))}
-        </div>
-        <div className='form__row'>
+      <div className="form">
+        {loaded && (
+          <div className="form__message">
+            {messages.map((item, index) => (
+              <Message key={index} message={item} />
+            ))}
+          </div>
+        )}
+        <div className="form__row">
           <input
-            className='form__input'
-            type='text'
-            placeholder='Type message'
+            className="form__input"
+            type="text"
+            placeholder="Type message"
             value={this.state.message}
             onChange={this.handleChange}
             onKeyPress={this.handleKeyPress}
           />
-          <button className='form__button' onClick={this.handleSend}>
+          <button className="form__button" onClick={this.handleSend}>
             send
           </button>
         </div>
@@ -83,16 +87,13 @@ const mapStateToProps = ({ auth, messaging, rooms }) => {
 
     room: rooms.room,
     messages: messaging.messages,
-    loaded: messaging.loaded
+    loaded: messaging.loaded,
   };
 };
 
 const mapDispatchToProps = {
   getMessages,
-  sendMessage
+  sendMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Form);
+export default connect(mapStateToProps, mapDispatchToProps)(Form);

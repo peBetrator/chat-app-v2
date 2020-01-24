@@ -16,8 +16,18 @@ class Message extends Component {
   }
 
   componentDidMount() {
-    const { uid } = this.props.message;
+    this.setProfileImg();
+  }
 
+  componentDidUpdate({ message }) {
+    const { uid } = this.props.message;
+    if (uid && message.uid !== uid) {
+      this.setProfileImg();
+    }
+  }
+
+  setProfileImg() {
+    const { uid } = this.props.message;
     getProfilePicUrl(uid).then(url => this.setState({ profileImg: url }));
   }
 

@@ -1,46 +1,46 @@
-import React, { Component } from 'react';
+import React, { Component, memo } from 'react';
 import './index.css';
+
+import defaultImageURI from '../../assets/imgs/default_profile_image.png';
 
 class ProfileImage extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       loaded: false,
-      hasError: false,
     };
 
     this.handleImageLoaded = this.handleImageLoaded.bind(this);
-    this.handleImageErrored = this.handleImageErrored.bind(this);
   }
 
   handleImageLoaded() {
-    this.setState({ loaded: true, hasError: false });
-  }
-
-  handleImageErrored() {
-    this.setState({ loaded: false, hasError: true });
+    this.setState({ loaded: true });
   }
 
   render() {
-    const { loaded, hasError } = this.state;
+    const { loaded } = this.state;
     const { imageURI, width = '30px', height = '30px' } = this.props;
 
     return (
       <div>
         <img
-          className={`circular__square ${!loaded && 'display-none'}`}
-          src={imageURI}
+          className={`circular__square`}
+          src={loaded ? imageURI || defaultImageURI : defaultImageURI}
           onLoad={this.handleImageLoaded}
-          onError={this.handleImageErrored}
           width={width}
           height={height}
         />
-        {!loaded && <p>Loading...</p>}
-        {hasError && <p>Couldn't load img</p>}
       </div>
     );
   }
 }
 
-export default ProfileImage;
+const MemoProfileImage = memo(ProfileImage, (prevProps, nextProps) => {
+  if (prevProps.imageURI === nextProps.imageURI) {
+    return true;
+  }
+
+  return false;
+});
+
+export default MemoProfileImage;

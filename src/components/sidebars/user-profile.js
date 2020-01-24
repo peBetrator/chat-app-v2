@@ -1,13 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './sidebar.css';
 
 import { connect } from 'react-redux';
-import { createDM } from '../../actions';
+import { createDM, getProfilePicUrl } from '../../actions';
 import { buildRoomTitle } from '../utils';
 
+import UserRights from './user-rights';
+import ProfileImage from '../common/profile-image';
+
 function UserProfile(props) {
-  const { myUID, uid, createDM } = props;
+  const [profileImg, setProfileImg] = useState('');
+  const { uid } = props;
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getProfilePicUrl(uid).then(url => setProfileImg(url));
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
   const handleDM = () => {
+    const { myUID, createDM } = props;
+
     const uids = {
       uid: myUID,
       dmuid: uid,
@@ -19,17 +35,17 @@ function UserProfile(props) {
 
   return (
     <div>
+      <ProfileImage imageURI={profileImg} width="100px" height="100px" />
       <div className="dm" onClick={handleDM}>
         direct message
       </div>
+      <UserRights uid={uid} />
     </div>
   );
 }
 
 const mapStateToProps = ({ auth }) => {
   return {
-    myName: auth.user.displayName,
-    myEmail: auth.user.email,
     myUID: auth.user.uid,
   };
 };

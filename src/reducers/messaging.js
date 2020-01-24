@@ -15,7 +15,8 @@ export default (
     case FETCH_MESSAGES_REQUEST:
       return {
         ...state,
-        // room: action.room
+        messages: [],
+        loaded: false,
       };
     case FETCH_MESSAGES_SUCCESS:
       return {
