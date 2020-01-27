@@ -105,20 +105,21 @@ function ChannelsTable(props) {
         </tbody>
       </table>
 
-      <Modal
-        show={modals.showChannel || modals.showUser}
-        handleClose={handleClose}
-      >
-        {modals.showChannel ? (
-          <AddChannelForm handleClose={handleClose} />
-        ) : (
-          <AddUserForm room={curRoom} handleClose={handleClose} />
-        )}
-      </Modal>
+      {(modals.showChannel || modals.showUser) && (
+        <Modal>
+          {modals.showChannel ? (
+            <AddChannelForm handleClose={handleClose} />
+          ) : (
+            <AddUserForm room={curRoom} handleClose={handleClose} />
+          )}
+        </Modal>
+      )}
 
-      <Modal show={modals.confirmation} handleClose={handleClose}>
-        <Confirmation room={curRoom} handleClose={handleClose} />
-      </Modal>
+      {modals.confirmation && (
+        <Modal>
+          <Confirmation room={curRoom} handleClose={handleClose} />
+        </Modal>
+      )}
     </div>
   );
 }

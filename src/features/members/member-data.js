@@ -61,9 +61,11 @@ function MemberData(props) {
       <Sidebar show={sidebar.showUserProfile} handleClose={handleClose}>
         <UserProfile uid={uid} />
       </Sidebar>
-      <Modal show={sidebar.confirmation} handleClose={handleClose}>
-        <Confirmation room={room} handleClose={handleClose} />
-      </Modal>
+      {sidebar.confirmation && (
+        <Modal>
+          <Confirmation room={room} handleClose={handleClose} />
+        </Modal>
+      )}
     </div>
   );
 }

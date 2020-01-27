@@ -1,20 +1,23 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import './index.css';
 
-function Modal(props) {
-  const showHideClassName = props.show
-    ? 'modal display-block'
-    : 'modal display-none';
+import SVGIcon from './svg';
 
-  // TODO use React.createPortal to display modal window
-  return (
-    <div className={showHideClassName}>
-      <section className="modal-main">
+const Modal = props => {
+  const { handleClose } = props.children.props;
+
+  return createPortal(
+    <div className="modal">
+      <section className="modal__main">
+        <div className="modal__close" onClick={handleClose}>
+          <SVGIcon name="close" width={10} />
+        </div>
         {props.children}
-        <button onClick={props.handleClose}>close</button>
       </section>
-    </div>
+    </div>,
+    document.body
   );
-}
+};
 
 export default Modal;

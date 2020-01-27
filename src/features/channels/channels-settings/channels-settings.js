@@ -1,65 +1,98 @@
-import React from 'react';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import React, { Component } from 'react';
 import './channels-settings.css';
 
-import Confirmation from './confirm';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import { connect } from 'react-redux';
+import { makeRoomFavorite } from '../../../actions';
+
 import SVGIcon from '../../components/common/svg';
 import Modal from '../../components/common/modal';
-import { connect } from 'react-redux';
+import Confirmation from './confirm';
 
-function ChannelsSetting(props) {
-  const { room } = props;
-  const [anchorSettings, setAnchorSetting] = React.useState(null);
-  const [confirmation, setConfirmation] = React.useState(false);
+class ChannelsSetting extends Component {
+  constructor(props) {
+    super(props);
 
-  const handleClick = event => {
+    this.state = {
+      menuAnchor: null,
+      showModal: false,
+    };
+  }
+
+  handleOpenMenu = event => {
     event.preventDefault();
-    setAnchorSetting(event.currentTarget);
+    this.setState({ menuAnchor: event.currentTarget });
   };
 
-  const handleClose = () => {
-    setConfirmation(false);
+  toggleModal = () => {
+    this.setState(state => ({ showModal: !state.showModal }));
   };
 
-  return (
-    // TODO create a generic component for Menu dropdown(used in profile-menu.js; channels-setting.js; member-list.js)
-    <>
-      <div onClick={handleClick}>
-        <SVGIcon name="show_more_dots" width={13} />
-      </div>
-      <Menu
-        id="simple-menu"
-        anchorEl={anchorSettings}
-        keepMounted
-        open={Boolean(anchorSettings)}
-        onClose={() => {
-          setAnchorSetting(null);
-        }}
-      >
-        <MenuItem
-          onClick={() => {
-            setConfirmation(true);
-            setAnchorSetting(null);
-          }}
+  render() {
+    const { room, favorite, uid, makeRoomFavorite } = this.props;
+    const { menuAnchor, showModal } = this.state;
+
+    return (
+      // TODO create a generic component for Menu dropdown(used in profile-menu.js; channels-setting.js; member-list.js)
+      <>
+        <div onClick={this.handleOpenMenu}>
+          <SVGIcon name="show_more_dots" width={13} />
+        </div>
+        <Menu
+          id="simple-menu"
+          anchorEl={menuAnchor}
+          keepMounted
+          open={Boolean(menuAnchor)}
+          onClose={this.handleHideMenu}
         >
-          Leave chat
-        </MenuItem>
-      </Menu>
+          <MenuItem
+            onClick={() => {
+              makeRoomFavorite(room, uid);
+              this.setState({ menuAnchor: null });
+            }}
+          >
+            {favorite ? 'Un-favorite' : 'Favorite'}
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              this.toggleModal();
+              this.setState({ menuAnchor: null });
+            }}
+          >
+            Hide channel
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              this.toggleModal();
+              this.setState({ menuAnchor: null });
+            }}
+          >
+            Leave channel
+          </MenuItem>
+        </Menu>
 
-      {/*// TODO do smth with passing the same method to modal and component itself*/}
-      <Modal show={confirmation} handleClose={handleClose}>
-        <Confirmation room={room} handleClose={handleClose} />
-      </Modal>
-    </>
-  );
+        {showModal && (
+          <Modal>
+            <Confirmation room={room} handleClose={this.toggleModal} />
+          </Modal>
+        )}
+      </>
+    );
+  }
 }
 
 const mapStateToProps = ({ auth }) => {
   return {
+    uid: auth.user.uid,
     userName: auth.user.displayName,
     email: auth.user.email,
   };
 };
 
-export default connect(mapStateToProps)(ChannelsSetting);
+const mapDispatchToProps = {
+  makeRoomFavorite,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChannelsSetting);
