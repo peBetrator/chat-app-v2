@@ -283,6 +283,36 @@ export const getUserRights = (room, uid) => {
   });
 };
 
+export const isAdmin = (uid, room) => {
+  const userRef = myFirebase.database().ref(`users/${uid}/rooms/${room}/admin`);
+
+  return userRef.once('value').then(userSnap => {
+    return userSnap.exists();
+  });
+};
+
+export const searchUserByEmail = email => {
+  const usersRef = myFirebase.database().ref('users');
+
+  return usersRef
+    .orderByChild('email')
+    .equalTo(email)
+    .once('value')
+    .then(userSnapshot => {
+      if (userSnapshot.exists()) {
+        return Object.keys(userSnapshot.val())[0];
+      }
+    });
+};
+
+export const searchUserByUid = uid => {
+  const usersRef = myFirebase.database().ref(`users/${uid}/email`);
+
+  return usersRef.once('value').then(userSnapshot => {
+    return userSnapshot.exists();
+  });
+};
+
 export const searchRoom = (room, uid) => dispatch => {
   const roomRef = myFirebase.database().ref(`room-metadata/${room}/`);
 

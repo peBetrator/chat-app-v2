@@ -1,5 +1,4 @@
 import React, { useReducer } from 'react';
-import './members.css';
 
 import { connect } from 'react-redux';
 

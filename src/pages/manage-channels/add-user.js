@@ -1,20 +1,36 @@
 import React from 'react';
-import { myFirebase } from '../../firebase/firebase';
 
-import { connect } from 'react-redux';
-import { addUserToRoom } from '../../actions';
+import {
+  addUserToRoom,
+  searchUserByUid,
+  searchUserByEmail,
+} from '../../actions';
 
 function AddUserForm(props) {
-  const { room, addUserToRoom, handleClose } = props;
   const [userName, setUserName] = React.useState('');
   const [added, setAdded] = React.useState(false);
 
-  const handleSubmit = e => {
-    searchUser(userName);
+  const handleSubmit = event => {
+    const { room } = props;
+
+    if (validateEmail(userName)) {
+      searchUserByEmail(userName).then(uid => {
+        addUserToRoom(room, uid);
+        displayMessage();
+      });
+    } else {
+      searchUserByUid(userName).then(() => {
+        addUserToRoom(room, userName);
+        displayMessage();
+      });
+    }
+
     setUserName('');
   };
 
   const displayMessage = () => {
+    const { handleClose } = props;
+
     setAdded(true);
     setTimeout(() => {
       handleClose();
@@ -22,31 +38,8 @@ function AddUserForm(props) {
     }, 1000);
   };
 
-  // TODO move all methods using firebase connection to separate file
-  const searchUser = user => {
-    const usersRef = myFirebase.database().ref('users');
-
-    if (validateEmail(user))
-      usersRef
-        .orderByChild('email')
-        .equalTo(user)
-        .once('value')
-        .then(snapshot => {
-          snapshot.forEach(data => {
-            addUserToRoom(room, data.key);
-            displayMessage();
-          });
-        });
-    else
-      usersRef
-        .child(`/${user}/email`)
-        .once('value')
-        .then(data => {
-          if (data.exists()) {
-            addUserToRoom(room, user);
-            displayMessage();
-          }
-        });
+  const handleChangeUsername = event => {
+    setUserName(event.target.value);
   };
 
   // TODO add and separate validations
@@ -62,7 +55,7 @@ function AddUserForm(props) {
         type="text"
         value={userName}
         placeholder="UID or E-mail"
-        onChange={e => setUserName(e.target.value)}
+        onChange={handleChangeUsername}
       />
       <button value="create" onClick={handleSubmit}>
         Search
@@ -73,19 +66,4 @@ function AddUserForm(props) {
   );
 }
 
-const mapStateToProps = ({ auth }) => {
-  return {
-    userName: auth.user.displayName,
-    email: auth.user.email,
-    uid: auth.user.uid,
-  };
-};
-
-const mapDispatchToProps = {
-  addUserToRoom,
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddUserForm);
+export default AddUserForm;

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './add-channel.css';
 
 import { connect } from 'react-redux';
 import { createRoom, searchRoom, getRooms } from '../../actions';

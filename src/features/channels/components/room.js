@@ -14,15 +14,20 @@ class Room extends Component {
     super(props);
 
     this.state = {
+      favorite: false,
       title: '',
     };
   }
 
   componentDidMount() {
     const {
-      roomData: { room, DM },
+      roomData: { room, DM, favorite },
       uid,
     } = this.props;
+
+    if (favorite) {
+      this.setState({ favorite: true });
+    }
 
     if (DM) {
       const uidToFind = formatDMTitle(room, uid);
@@ -42,7 +47,7 @@ class Room extends Component {
 
   render() {
     const { curRoom } = this.props;
-    const { title } = this.state;
+    const { favorite, title } = this.state;
 
     return (
       <Link style={{ textDecoration: 'none' }} to="/">
@@ -52,7 +57,7 @@ class Room extends Component {
           value={title}
         >
           {title}
-          <ChannelsSetting room={title} />
+          <ChannelsSetting room={title} favorite={favorite} />
         </li>
       </Link>
     );

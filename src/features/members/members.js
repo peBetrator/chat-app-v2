@@ -1,41 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { myFirebase } from '../../firebase/firebase';
+import React, { useEffect, useReducer } from 'react';
 import './members.css';
 
-import { getMembers } from '../../actions';
+import { connect } from 'react-redux';
+import { getMembers, isAdmin } from '../../actions';
+
 import MemberData from './member-data';
 
-function Members(props) {
-  const [viewData, setViewData] = useState(false);
-  const [selectedMember, setSelected] = useState(-1);
+const initMemberData = {
+  selectedMember: -1,
+  viewData: false,
+};
 
-  const { uid, room, members, loadedMembers } = props;
+function Members(props) {
+  const [memberData, setMemberData] = useReducer(
+    (state, details) => ({
+      ...state,
+      ...details,
+    }),
+    initMemberData
+  );
+
+  const { room, members, loadedMembers } = props;
 
   useEffect(() => {
-    const { getMembers } = props;
-
-    setViewData(false);
-    setSelected(-1);
+    const { uid, getMembers } = props;
 
     getMembers(room);
-    isAdmin(uid, room);
+    isAdmin(uid, room).then(rights => {
+      setMemberData({ ...initMemberData, viewData: rights });
+    });
   }, [room]);
 
   const selectMember = index => {
-    setSelected(index);
-  };
-
-  const isAdmin = (uid, room) => {
-    myFirebase
-      .database()
-      .ref(`users/${uid}/rooms/${room}/admin`)
-      .once('value')
-      .then(userSnap => {
-        if (userSnap.exists()) {
-          setViewData(true);
-        }
-      });
+    setMemberData({ selectedMember: index });
   };
 
   return (
@@ -48,10 +45,10 @@ function Members(props) {
           <div key={i}>
             <MemberData
               // TODO extract members data to redux store
-              isSelected={selectedMember === i}
+              isSelected={memberData.selectedMember === i}
               select={selectMember}
               id={i}
-              view={viewData}
+              view={memberData.viewData}
               displayName={userName || email}
               uid={uid}
             />
