@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { getProfilePicUrl } from '../../../actions';
 
 import ProfileImage from '../../components/common/profile-image';
+import FilePreview from './file-preview';
 
 class Message extends Component {
   constructor(props) {
@@ -16,7 +17,8 @@ class Message extends Component {
   }
 
   componentDidMount() {
-    this.setProfileImg();
+    const { uid } = this.props.message;
+    getProfilePicUrl(uid).then(url => this.setState({ profileImg: url }));
   }
 
   componentDidUpdate({ message }) {
@@ -26,15 +28,10 @@ class Message extends Component {
     }
   }
 
-  setProfileImg() {
-    const { uid } = this.props.message;
-    getProfilePicUrl(uid).then(url => this.setState({ profileImg: url }));
-  }
-
   render() {
     const { profileImg } = this.state;
     const stateUID = this.props.uid;
-    const { uid, name, message, timestamp } = this.props.message;
+    const { uid, name, message, timestamp, file } = this.props.message;
     const time = new Date(timestamp).toLocaleTimeString();
 
     return (
@@ -43,7 +40,7 @@ class Message extends Component {
         <span className="message__author">
           {name} ({time}):
         </span>
-        {message}
+        {file && file.url ? <FilePreview file={file} /> : message}
       </div>
     );
   }

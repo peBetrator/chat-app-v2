@@ -2,15 +2,19 @@ import React, { Component } from 'react';
 import './form.css';
 
 import { connect } from 'react-redux';
-import { getMessages, sendMessage } from '../../../actions';
+import { getMessages, sendMessage, sendFileMessage } from '../../../actions';
 
 import Message from '../../messages/components/message';
+import SVGIcon from '../../components/common/svg';
+import FileUploader from '../../components/common/file-uploader';
 
 class Form extends Component {
   constructor(props) {
     super(props);
     this.state = {
       message: '',
+      file: null,
+      metadata: {},
     };
 
     this.listenMessages();
@@ -28,21 +32,51 @@ class Form extends Component {
     this.setState({ message: event.target.value });
   };
 
-  handleSend = () => {
-    const { sendMessage, room, userName, email, uid } = this.props;
-    const messageObject = {
+  handleSendMessage = () => {
+    const {
+      room,
+      userName,
+      email,
+      uid,
+      sendMessage,
+      sendFileMessage,
+    } = this.props;
+    const { message, file, metadata } = this.state;
+    if (!message || !file) {
+      return;
+    }
+
+    const payload = {
       user: userName || email,
-      message: this.state.message,
       room,
       uid,
+      message,
     };
-    sendMessage(messageObject);
-    this.setState({ message: '' });
+
+    sendMessage(payload);
+
+    if (file) {
+      const { message, ...newObject } = payload;
+      Object.assign(newObject, { file, metadata });
+      sendFileMessage(payload);
+    }
+
+    this.setState({
+      message: '',
+      file: null,
+      metadata: {},
+    });
     this.listenMessages();
   };
 
   handleKeyPress = event => {
-    if (event.key === 'Enter') this.handleSend();
+    if (event.key === 'Enter') this.handleSendMessage();
+  };
+
+  handleImageSelect = event => {
+    const file = event.target.files[0];
+
+    this.setState({ file, metadata: { contentType: file.type } });
   };
 
   listenMessages = () => {
@@ -70,7 +104,12 @@ class Form extends Component {
             onChange={this.handleChange}
             onKeyPress={this.handleKeyPress}
           />
-          <button className="form__button" onClick={this.handleSend}>
+          <div className="form__add">
+            <FileUploader onChange={this.handleImageSelect}>
+              <SVGIcon className="icon" name="add" width="13px" />
+            </FileUploader>
+          </div>
+          <button className="form__button" onClick={this.handleSendMessage}>
             send
           </button>
         </div>
@@ -94,6 +133,7 @@ const mapStateToProps = ({ auth, messaging, rooms }) => {
 const mapDispatchToProps = {
   getMessages,
   sendMessage,
+  sendFileMessage,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Form);

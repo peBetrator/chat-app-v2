@@ -8,24 +8,28 @@ class ProfileImage extends Component {
     super(props);
     this.state = {
       loaded: false,
+      error: false,
     };
-
-    this.handleImageLoaded = this.handleImageLoaded.bind(this);
   }
 
-  handleImageLoaded() {
+  handleImageLoaded = () => {
     this.setState({ loaded: true });
-  }
+  };
+
+  handleImageError = () => {
+    this.setState({ error: true, loaded: false });
+  };
 
   render() {
-    const { loaded } = this.state;
+    const { loaded, error } = this.state;
     const { imageURI, width = '30px', height = '30px' } = this.props;
 
     return (
       <div>
         <img
           className={`circular__square`}
-          src={loaded ? imageURI || defaultImageURI : defaultImageURI}
+          src={(loaded && !error) ? imageURI || defaultImageURI : defaultImageURI}
+          onError={this.handleImageError}
           onLoad={this.handleImageLoaded}
           width={width}
           height={height}

@@ -1,18 +1,4 @@
-import {
-  FETCH_ROOMS_REQUEST,
-  FETCH_ROOMS_SUCCESS,
-  FETCH_ROOMS_EMPTY,
-  FETCH_MEMBERS_REQUEST,
-  FETCH_MEMBERS_SUCCESS,
-  CREATE_ROOM_SUCCESS,
-  CHANGE_ROOM_REQUEST,
-  ADD_ROOM_REQUEST,
-  SEARCH_ROOM_REQUEST,
-  SEARCH_ROOM_SUCCESS,
-  LEAVE_CHAT_REQUEST,
-  EXIT_ROOM_REQUEST,
-  ERROR_CATCHED,
-} from '../actions';
+import * as actionTypes from '../actions/types';
 
 const fiterRooms = (state, rooms) => {
   const publicRooms = [];
@@ -65,32 +51,32 @@ export default (
   action
 ) => {
   switch (action.type) {
-    case FETCH_ROOMS_REQUEST:
+    case actionTypes.FETCH_ROOMS_REQUEST:
       return {
         ...state,
         loadedRooms: false,
       };
-    case FETCH_ROOMS_SUCCESS:
+    case actionTypes.FETCH_ROOMS_SUCCESS:
       return fiterRooms(state, action.rooms);
-    case FETCH_ROOMS_EMPTY:
+    case actionTypes.FETCH_ROOMS_EMPTY:
       return {
         ...state,
         noRooms: true,
       };
 
-    case FETCH_MEMBERS_REQUEST:
+    case actionTypes.FETCH_MEMBERS_REQUEST:
       return {
         ...state,
         loadedMembers: false,
       };
-    case FETCH_MEMBERS_SUCCESS:
+    case actionTypes.FETCH_MEMBERS_SUCCESS:
       return {
         ...state,
         loadedMembers: true,
         members: action.members,
       };
 
-    case CREATE_ROOM_SUCCESS:
+    case actionTypes.CREATE_ROOM_SUCCESS:
       return {
         ...state,
         privateRooms: [
@@ -99,41 +85,41 @@ export default (
         ],
       };
 
-    case SEARCH_ROOM_REQUEST:
+    case actionTypes.SEARCH_ROOM_REQUEST:
       return {
         ...state,
         roomFound: false,
       };
-    case SEARCH_ROOM_SUCCESS:
+    case actionTypes.SEARCH_ROOM_SUCCESS:
       return {
         ...state,
         roomFound: true,
       };
 
-    case ADD_ROOM_REQUEST:
+    case actionTypes.ADD_ROOM_REQUEST:
       return {
         ...state,
         rooms: [...state.rooms, action.room],
       };
 
-    case CHANGE_ROOM_REQUEST:
+    case actionTypes.CHANGE_ROOM_REQUEST:
       return {
         ...state,
         room: action.room,
       };
 
-    case EXIT_ROOM_REQUEST:
+    case actionTypes.EXIT_ROOM_REQUEST:
       return {
         ...state,
         room: '',
       };
-    case LEAVE_CHAT_REQUEST:
+    case actionTypes.LEAVE_CHAT_REQUEST:
       return {
         ...state,
         rooms: state.rooms.filter(item => item.room !== action.room),
       };
 
-    case ERROR_CATCHED:
+    case actionTypes.ERROR_CATCHED:
       return {
         ...state,
         errorMsg: action.error,

@@ -4,7 +4,7 @@
   flex-direction: column;
   width: 50%;
   padding: 20px;
-  margin: 0 auto;
+  /* margin: 0 auto; */
   top: 15px;
 }
 
@@ -22,6 +22,15 @@
   border: 1px solid #ddd;
   box-sizing: border-box;
   outline: 0;
+}
+
+.form__add {
+  position: relative;
+}
+
+.form__add .icon {
+  position: absolute;
+  right: 0;
 }
 
 .form__input:focus {

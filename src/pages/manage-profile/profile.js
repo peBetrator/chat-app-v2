@@ -4,7 +4,7 @@ import './manage-profile.css';
 import ProfileImage from '../../features/components/common/profile-image';
 
 import { connect } from 'react-redux';
-import { changeName, changeProfileImg } from '../../actions';
+import { changeName, uploadProfileImg } from '../../actions';
 
 function Profile(props) {
   const { userName, uid, photoURI } = props;
@@ -14,6 +14,7 @@ function Profile(props) {
   const [isEdit, setEdit] = React.useState(false);
 
   const handleSubmit = e => {
+    e.preventDefault();
     const { handleNameChange, handleProfileImgChange } = props;
 
     if (isEdit) {
@@ -24,8 +25,6 @@ function Profile(props) {
       }
     }
     setEdit(!isEdit);
-
-    e.preventDefault();
   };
 
   const updateProfileImg = e => {
@@ -66,7 +65,7 @@ const mapStateToProps = ({ auth }) => {
 
 const mapDispatchToProps = {
   handleNameChange: changeName,
-  handleProfileImgChange: changeProfileImg,
+  handleProfileImgChange: uploadProfileImg,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

@@ -1,22 +1,21 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import './index.css';
 
 import SVGIcon from './svg';
 
-function Sidebar(props) {
-  const { handleClose } = props;
-  const showHideClassName = props.show
-    ? 'sidebar__main show'
-    : 'sidebar__main display-none';
+const Sidebar = props => {
+  const { handleClose } = props.children.props;
 
-  return (
-    <div className={showHideClassName}>
+  return createPortal(
+    <div className="sidebar__main">
       <div className="sidebar__close" onClick={handleClose}>
         <SVGIcon name="close" width={13} />
       </div>
       {props.children}
-    </div>
+    </div>,
+    document.getElementById('content')
   );
-}
+};
 
 export default Sidebar;

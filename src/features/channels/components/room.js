@@ -17,6 +17,9 @@ class Room extends Component {
       favorite: false,
       title: '',
     };
+
+    this.preventBubbling = this.preventBubbling.bind(this);
+    this.handleChannelChange = this.handleChannelChange.bind(this);
   }
 
   componentDidMount() {
@@ -38,12 +41,17 @@ class Room extends Component {
     }
   }
 
-  handleChannelChange = e => {
+  preventBubbling(event) {
+    event.stopPropagation();
+  }
+
+  handleChannelChange(event) {
+    event.preventDefault();
     const { handleRoomChange } = this.props;
-    const room = e.currentTarget.getAttribute('value');
+    const room = event.currentTarget.getAttribute('value');
 
     handleRoomChange(room);
-  };
+  }
 
   render() {
     const { curRoom } = this.props;
@@ -51,13 +59,13 @@ class Room extends Component {
 
     return (
       <Link style={{ textDecoration: 'none' }} to="/">
-        <li
-          className={curRoom === title ? 'active' : ''}
-          onClick={this.handleChannelChange}
-          value={title}
-        >
-          {title}
-          <ChannelsSetting room={title} favorite={favorite} />
+        <li className={curRoom === title ? 'active' : ''}>
+          <div onClick={this.handleChannelChange} value={title}>
+            {title}
+          </div>
+          <div onClick={this.preventBubbling}>
+            <ChannelsSetting room={title} favorite={favorite} />
+          </div>
         </li>
       </Link>
     );

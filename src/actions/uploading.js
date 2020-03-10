@@ -1,38 +1,79 @@
 import { myFirebase } from '../firebase/firebase';
+import * as actionTypes from './types';
 
-import {
-  UPLOADING_START,
-  UPLOADING_SUCCESS,
-  UPDATE_PROFILE_IMG_URL,
-} from './types';
-
-export const changeProfileImg = file => dispatch => {
+export const uploadProfileImg = file => dispatch => {
   const user = myFirebase.auth().currentUser;
   const uid = user.uid;
-  const photoURL = `${uid}/profilePicture/${file.name}`;
+  const photoURL = `user-pictures/${uid}/${file.name}`;
 
   const storageRef = myFirebase.storage().ref(photoURL);
 
-  dispatch({ type: UPLOADING_START });
-  storageRef.put(file).then(snapshot => {
-    dispatch({ type: UPLOADING_SUCCESS });
+  const uploadTask = storageRef.put(file);
+  dispatch({ type: actionTypes.UPLOADING_START });
 
-    snapshot.ref.getDownloadURL().then(url => {
-      user
-        .updateProfile({
-          photoURL: url,
-        })
-        .then(() => {
-          myFirebase
-            .database()
-            .ref(`users/${uid}/`)
-            .update({
-              photoURL: url,
-            })
-            .then(dispatch({ type: UPDATE_PROFILE_IMG_URL, payload: url }));
-        });
-    });
-  });
+  uploadTask.on(
+    'state_changed',
+    snapshot => {},
+    error => {
+      dispatch({ type: actionTypes.UPLOADING_FAIL, payload: error });
+    },
+    () => {
+      dispatch({ type: actionTypes.UPLOADING_SUCCESS });
+      uploadTask.snapshot.ref.getDownloadURL().then(url => {
+        user
+          .updateProfile({
+            photoURL: url,
+          })
+          .then(() => {
+            myFirebase
+              .database()
+              .ref(`users/${uid}/`)
+              .update({
+                photoURL: url,
+              })
+              .then(
+                dispatch({
+                  type: actionTypes.UPDATE_PROFILE_IMG_URL,
+                  payload: url,
+                })
+              );
+          });
+      });
+    }
+  );
+};
+
+export const uploadGroupImg = (file, room) => dispatch => {
+  const photoURL = `room-data/${room}/${file.name}`;
+
+  const storageRef = myFirebase.storage().ref(photoURL);
+
+  const uploadTask = storageRef.put(file);
+  dispatch({ type: actionTypes.UPLOADING_START });
+
+  uploadTask.on(
+    'state_changed',
+    snapshot => {},
+    error => {
+      dispatch({ type: actionTypes.UPLOADING_FAIL, payload: error });
+    },
+    () => {
+      uploadTask.snapshot.ref.getDownloadURL().then(url => {
+        myFirebase
+          .database()
+          .ref(`room-metadata/${room}/`)
+          .update({ photoURL: url })
+          .then(
+            () => {
+              dispatch({ type: actionTypes.UPLOADING_SUCCESS });
+            },
+            error => {
+              dispatch({ type: actionTypes.UPLOADING_FAIL, payload: error });
+            }
+          );
+      });
+    }
+  );
 };
 
 // export const uploadImage = data => async (dispatch, getState) => {

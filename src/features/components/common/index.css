@@ -29,9 +29,8 @@
 }
 
 .sidebar__main {
+  z-index: 1;
   background-color: blanchedalmond;
-  position: fixed;
-  width: 200px;
   top: 0;
   bottom: 0;
   right: 0;

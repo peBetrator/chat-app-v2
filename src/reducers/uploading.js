@@ -1,10 +1,4 @@
-import {
-  UPLOADING_START,
-  UPLOADING_SUCCESS,
-  UPLOADING_FAIL,
-  UPLOADING,
-  GET_DATA,
-} from '../actions/types';
+import * as actionTypes from '../actions/types';
 
 export default (
   state = {
@@ -16,14 +10,14 @@ export default (
   action
 ) => {
   switch (action.type) {
-    case UPLOADING_START:
+    case actionTypes.UPLOADING_START:
       return {
         ...state,
         percent: 0,
         showProgress: true,
       };
 
-    case UPLOADING_SUCCESS:
+    case actionTypes.UPLOADING_SUCCESS:
       return {
         ...state,
         error: false,
@@ -31,21 +25,21 @@ export default (
         showProgress: false,
       };
 
-    case UPLOADING_FAIL:
+    case actionTypes.UPLOADING_FAIL:
       return {
         ...state,
         error: action.payload,
         showProgress: false,
       };
 
-    case UPLOADING:
+    case actionTypes.UPLOADING:
       return {
         ...state,
         percent: action.payload,
         showProgress: true,
       };
 
-    case GET_DATA:
+    case actionTypes.GET_DATA:
       return {
         ...state,
         image: action.payload,

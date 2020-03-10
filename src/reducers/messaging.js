@@ -1,8 +1,4 @@
-import {
-  FETCH_MESSAGES_REQUEST,
-  FETCH_MESSAGES_SUCCESS,
-  SEND_MESSAGE_REQUEST,
-} from '../actions';
+import * as actionType from '../actions/types';
 
 export default (
   state = {
@@ -12,20 +8,20 @@ export default (
   action
 ) => {
   switch (action.type) {
-    case FETCH_MESSAGES_REQUEST:
+    case actionType.FETCH_MESSAGES_REQUEST:
       return {
         ...state,
         messages: [],
         loaded: false,
       };
-    case FETCH_MESSAGES_SUCCESS:
+    case actionType.FETCH_MESSAGES_SUCCESS:
       return {
         ...state,
         messages: action.messages,
         loaded: true,
       };
 
-    case SEND_MESSAGE_REQUEST:
+    case actionType.SEND_MESSAGE_REQUEST:
       return {
         ...state,
       };

@@ -57,9 +57,11 @@ function MemberData(props) {
         </ul>
       </div>
 
-      <Sidebar show={sidebar.showUserProfile} handleClose={handleClose}>
-        <UserProfile uid={uid} />
-      </Sidebar>
+      {sidebar.showUserProfile && (
+        <Sidebar>
+          <UserProfile uid={uid} handleClose={handleClose} />
+        </Sidebar>
+      )}
       {sidebar.confirmation && (
         <Modal>
           <Confirmation room={room} handleClose={handleClose} />

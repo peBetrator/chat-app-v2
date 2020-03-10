@@ -1,27 +1,22 @@
 import { myFirebase } from '../firebase/firebase';
-
-export const FETCH_MESSAGES_REQUEST = 'FETCH_MESSAGES_REQUEST';
-export const FETCH_MESSAGES_SUCCESS = 'FETCH_MESSAGES_SUCCESS';
-export const FETCH_MESSAGES_FAILURE = 'FETCH_MESSAGES_FAILURE';
-
-export const SEND_MESSAGE_REQUEST = 'SEND_MESSAGE_REQUEST';
+import * as actionTypes from './types';
 
 const fetchMessages = room => {
   return {
-    type: FETCH_MESSAGES_REQUEST,
+    type: actionTypes.FETCH_MESSAGES_REQUEST,
     room,
   };
 };
 const fetchMessagesSuccess = messages => {
   return {
-    type: FETCH_MESSAGES_SUCCESS,
+    type: actionTypes.FETCH_MESSAGES_SUCCESS,
     messages,
   };
 };
 
 const sendMessageRequest = message => {
   return {
-    type: SEND_MESSAGE_REQUEST,
+    type: actionTypes.SEND_MESSAGE_REQUEST,
     message,
   };
 };
@@ -36,17 +31,55 @@ export const getMessages = room => async dispatch => {
   });
 };
 
-export const sendMessage = ({ room, user, message, uid }) => dispatch => {
-  const newMessage = {
+export const sendMessage = data => dispatch => {
+  const { user, room, uid, message } = data;
+
+  const messageRef = myFirebase.database().ref(`room-messages/${room}`);
+  const payload = {
     uid,
     name: user,
     message,
     timestamp: +new Date(),
   };
+
+  messageRef.push(payload, error => {
+    error ? console.log(error) : dispatch(sendMessageRequest(message));
+  });
+};
+
+export const sendFileMessage = data => dispatch => {
+  const { user, room, uid, message, file } = data;
+
+  const fileUrl = `chat-files/${room}/${file.name}`;
+  const storageRef = myFirebase.storage().ref(fileUrl);
   const messageRef = myFirebase.database().ref(`room-messages/${room}`);
 
-  messageRef.push(newMessage);
-  dispatch(sendMessageRequest(message));
+  const uploadTask = storageRef.put(file);
+  dispatch({ type: actionTypes.UPLOADING_START });
+
+  return uploadTask.on(
+    'state_changed',
+    snapshot => {},
+    error => {
+      dispatch({ type: actionTypes.UPLOADING_FAIL, payload: error });
+    },
+    () => {
+      uploadTask.snapshot.ref.getDownloadURL().then(url => {
+        const { metadata } = data;
+        const payload = {
+          uid,
+          name: user,
+          message,
+          timestamp: +new Date(),
+          file: { url, metadata },
+        };
+
+        messageRef.push(payload, error => {
+          error ? console.log(error) : dispatch(sendMessageRequest(message));
+        });
+      });
+    }
+  );
 };
 
 export const getProfilePicUrl = uid => {
