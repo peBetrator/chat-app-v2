@@ -8,7 +8,7 @@ const Modal = props => {
   const { handleClose } = props.children.props;
 
   return createPortal(
-    <div className="modal">
+    <div className="custom__modal">
       <section className="modal__main">
         <div className="modal__close" onClick={handleClose}>
           <SVGIcon name="close" width={10} />

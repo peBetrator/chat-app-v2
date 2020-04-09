@@ -1,81 +1,41 @@
-import { myFirebase } from '../firebase/firebase';
-
-export const LOGIN_REQUEST = 'LOGIN_REQUEST';
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const LOGIN_FAILURE = 'LOGIN_FAILURE';
-
-export const SIGNUP_REQUEST = 'SIGNUP_REQUEST';
-export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
-export const SIGNUP_FAILURE = 'SIGNUP_FAILURE';
-
-export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
-export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
-export const LOGOUT_FAILURE = 'LOGOUT_FAILURE';
-
-export const VERIFY_REQUEST = 'VERIFY_REQUEST';
-export const VERIFY_SUCCESS = 'VERIFY_SUCCESS';
-
-export const CHANGE_USERNAME_SUCCESS = 'CHANGE_USERNAME_SUCCESS';
+import { auth, myFirebase } from '../firebase/firebase';
+import { addUserToRoom } from './rooms';
+import * as actionTypes from './types';
 
 const requestLogin = () => {
   return {
-    type: LOGIN_REQUEST,
+    type: actionTypes.LOGIN_REQUEST,
   };
 };
 const receiveLogin = user => {
   return {
-    type: LOGIN_SUCCESS,
+    type: actionTypes.LOGIN_SUCCESS,
     user,
   };
 };
 const loginError = errorMessage => {
   return {
-    type: LOGIN_FAILURE,
+    type: actionTypes.LOGIN_FAILURE,
+    payload: errorMessage,
   };
 };
 
-const requestSignUp = () => {
-  return {
-    type: SIGNUP_REQUEST,
-  };
-};
 const signUpError = errorMessage => {
   return {
-    type: SIGNUP_FAILURE,
+    type: actionTypes.SIGNUP_FAILURE,
+    payload: errorMessage,
   };
 };
 
-const requestLogout = () => {
-  return {
-    type: LOGOUT_REQUEST,
-  };
-};
-
-const receiveLogout = () => {
-  return {
-    type: LOGOUT_SUCCESS,
-  };
-};
 const logoutError = () => {
   return {
-    type: LOGOUT_FAILURE,
-  };
-};
-
-const verifyRequest = () => {
-  return {
-    type: VERIFY_REQUEST,
-  };
-};
-const verifySuccess = () => {
-  return {
-    type: VERIFY_SUCCESS,
+    type: actionTypes.LOGOUT_FAILURE,
   };
 };
 
 const changeUsernameSuccess = user => {
   return {
-    type: CHANGE_USERNAME_SUCCESS,
+    type: actionTypes.CHANGE_USERNAME_SUCCESS,
     user,
   };
 };
@@ -89,17 +49,21 @@ export const loginUser = (email, password) => dispatch => {
       dispatch(receiveLogin(user.user));
     })
     .catch(error => {
-      dispatch(loginError());
+      dispatch(loginError(error));
     });
 };
 
 export const logoutUser = () => dispatch => {
-  dispatch(requestLogout());
+  dispatch({
+    type: actionTypes.LOGOUT_REQUEST,
+  });
   myFirebase
     .auth()
     .signOut()
     .then(() => {
-      dispatch(receiveLogout());
+      dispatch({
+        type: actionTypes.LOGOUT_SUCCESS,
+      });
     })
     .catch(error => {
       dispatch(logoutError(error));
@@ -107,12 +71,16 @@ export const logoutUser = () => dispatch => {
 };
 
 export const verifyAuth = () => dispatch => {
-  dispatch(verifyRequest());
+  dispatch({
+    type: actionTypes.VERIFY_REQUEST,
+  });
   myFirebase.auth().onAuthStateChanged(user => {
     if (user !== null) {
       dispatch(receiveLogin(user));
     }
-    dispatch(verifySuccess());
+    dispatch({
+      type: actionTypes.VERIFY_SUCCESS,
+    });
   });
 };
 
@@ -121,13 +89,18 @@ export const registerUser = (email, password) => dispatch => {
     .auth()
     .createUserWithEmailAndPassword(email, password)
     .then(({ user }) => {
-      dispatch(requestSignUp());
+      dispatch({
+        type: actionTypes.SIGNUP_REQUEST,
+      });
 
       myFirebase
         .database()
         .ref(`users/${user.uid}`)
         .set({
           email: email,
+        })
+        .then(() => {
+          addUserToRoom('general', user.uid);
         });
     })
     .catch(error => {
@@ -145,10 +118,23 @@ export const changeName = userName => dispatch => {
     })
     .then(dispatch(changeUsernameSuccess(userName)));
 
+  myFirebase.database().ref(`users/${uid}/`).update({
+    username: userName,
+  });
+};
+
+export const signInWithGoogle = () => dispatch => {
+  dispatch(requestLogin());
+
+  const provider = new auth.GoogleAuthProvider();
   myFirebase
-    .database()
-    .ref(`users/${uid}/`)
-    .update({
-      username: userName,
+    .auth()
+    .signInWithPopup(provider)
+    .then(user => {
+      dispatch(receiveLogin(user.user));
+    })
+    .catch(error => {
+      dispatch(loginError());
+      dispatch(signUpError(error));
     });
 };

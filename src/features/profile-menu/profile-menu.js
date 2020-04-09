@@ -43,7 +43,7 @@ function ProfileMenu(props) {
       ) : (
         <div className="app__profile" onClick={handleClick}>
           {userName}
-          <SVGIcon className="profile__icon" name="profile" width={13} />
+          <SVGIcon className="profile__icon" name="profile" width={20} />
         </div>
       )}
       <Menu

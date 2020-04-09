@@ -5,6 +5,7 @@ import Header from '../components/header/app-header';
 import Channels from '../../features/channels/components/channels';
 
 import MainChat from '../../pages/main/chat-page';
+import Footer from '../components/common/footer';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <MainChat />
         </div>
       </div>
+      {/* <Footer /> */}
     </div>
   );
 }

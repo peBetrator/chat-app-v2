@@ -5,7 +5,9 @@ import { Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import ProtectedRoute from '../../routing';
 
-import Login from '../login/login-page';
+// import Login from '../login/login-page';
+import Login from '../login/Login';
+import Singup from '../login/Singup';
 import Profile from '../manage-profile/profile';
 import ChannelsTable from '../manage-channels/channels-table';
 
@@ -17,7 +19,8 @@ function MainChat(props) {
 
   return (
     <Switch>
-      <Route path="/login" component={Login} />
+      <Route path="/signin" component={Login} />
+      <Route path="/signup" component={Singup} />
       <ProtectedRoute
         exact
         path="/"

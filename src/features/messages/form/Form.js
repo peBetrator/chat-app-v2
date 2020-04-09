@@ -42,7 +42,7 @@ class Form extends Component {
       sendFileMessage,
     } = this.props;
     const { message, file, metadata } = this.state;
-    if (!message || !file) {
+    if (!message && !file) {
       return;
     }
 

@@ -10,7 +10,6 @@
   position: relative;
   height: 100vh !important;
   overflow: auto;
-  z-index: 1;
 }
 
 .sidebar li {

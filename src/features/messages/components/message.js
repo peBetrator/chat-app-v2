@@ -24,7 +24,7 @@ class Message extends Component {
   componentDidUpdate({ message }) {
     const { uid } = this.props.message;
     if (uid && message.uid !== uid) {
-      this.setProfileImg();
+      // this.setProfileImg();
     }
   }
 

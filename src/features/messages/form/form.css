@@ -30,7 +30,8 @@
 
 .form__add .icon {
   position: absolute;
-  right: 0;
+  right: 5px;
+  top: 0;
 }
 
 .form__input:focus {
