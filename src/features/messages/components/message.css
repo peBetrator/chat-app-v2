@@ -1,39 +1,31 @@
-.message {
+.chat__bubble {
+  background-color: #bbdefb;
+  padding: 20px;
+  border-radius: 4px;
+  max-width: 300px;
+  word-wrap: break-word;
+  margin-left: 40px;
+  margin-bottom: 5px;
+}
+
+.current__user {
+  margin-left: auto;
+  background-color: #a5d6a7;
+}
+
+.chat__profile {
+  float: left;
   display: flex;
-  position: relative;
-  padding: 10px 60px 10px 20px;
+}
+.chat__profile * {
+  margin-right: 5px;
+}
+
+.chat__time {
   font-size: 12px;
-  text-align: left;
-  line-height: 1.7;
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.message img {
-  margin-right: 10px;
-}
-
-.me {
-  background-color: rgba(4, 0, 255, 0.05);
-}
-.me:nth-child(even) {
-  background-color: rgba(4, 0, 255, 0.025);
-}
-
-.other {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-.other:nth-child(even) {
-  background-color: rgba(0, 0, 0, 0.025);
-}
-
-.message__author {
-  font-weight: 600;
-  margin-right: 10px;
-  color: rgba(0, 0, 0, 1);
-}
-
-.message__friend {
-  font-weight: 600;
-  margin-right: 10px;
-  color: rgba(28; 18; 167; 0.836);
+  color: #757575;
+  text-align: right;
+  float: right;
+  position: relative;
+  top: 5px;
 }

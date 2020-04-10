@@ -8,17 +8,19 @@ import ProfileImage from '../../components/common/profile-image';
 import FilePreview from './file-preview';
 
 class Message extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      profileImg: '',
-    };
-  }
+  state = {
+    isCurrentUser: true,
+    profileImg: '',
+  };
 
   componentDidMount() {
     const { uid } = this.props.message;
-    getProfilePicUrl(uid).then(url => this.setState({ profileImg: url }));
+    const stateUID = this.props.uid;
+    if (stateUID !== uid) {
+      getProfilePicUrl(uid).then(url =>
+        this.setState({ isCurrentUser: false, profileImg: url })
+      );
+    }
   }
 
   componentDidUpdate({ message }) {
@@ -29,19 +31,27 @@ class Message extends Component {
   }
 
   render() {
-    const { profileImg } = this.state;
-    const stateUID = this.props.uid;
-    const { uid, name, message, timestamp, file } = this.props.message;
+    const { isCurrentUser, profileImg } = this.state;
+    const {
+      showProfilePic,
+      message: { name, message, timestamp, file },
+    } = this.props;
     const time = new Date(timestamp).toLocaleTimeString();
 
     return (
-      <div className={`message ${stateUID === uid ? 'me' : 'other'}`}>
-        <ProfileImage imageURI={profileImg} />
-        <span className="message__author">
-          {name} ({time}):
-        </span>
-        {file && file.url ? <FilePreview file={file} /> : message}
-      </div>
+      <>
+        {!isCurrentUser && showProfilePic && (
+          <div className="chat__profile">
+            <ProfileImage imageURI={profileImg} />
+            {name}
+          </div>
+        )}
+        <div className={`chat__bubble ${isCurrentUser && 'current__user'}`}>
+          {file && file.url ? <FilePreview file={file} /> : message}
+          <br />
+          <span className="chat__time">({time})</span>
+        </div>
+      </>
     );
   }
 }

@@ -84,17 +84,23 @@ class Form extends Component {
     getMessages(room);
   };
 
+  renderMessages = messages => {
+    let userUID = '';
+    return messages.map((item, index) => {
+      let show = false;
+      if (userUID !== item.uid) {
+        show = true;
+        userUID = item.uid;
+      }
+      return <Message key={index} message={item} showProfilePic={show} />;
+    });
+  };
+
   render() {
     const { messages, loaded } = this.props;
     return (
       <div className="form">
-        {loaded && (
-          <div className="form__message">
-            {messages.map((item, index) => (
-              <Message key={index} message={item} />
-            ))}
-          </div>
-        )}
+        {loaded && this.renderMessages(messages)}
         <div className="form__row">
           <input
             className="form__input"
@@ -104,9 +110,14 @@ class Form extends Component {
             onChange={this.handleChange}
             onKeyPress={this.handleKeyPress}
           />
-          <div className="form__add">
+          <div className="form__add" title="Send file">
             <FileUploader onChange={this.handleImageSelect}>
-              <SVGIcon className="icon" name="add" width="13px" />
+              <SVGIcon
+                className="icon"
+                name="add"
+                width="25px"
+                fill="rgba(28, 18, 167, 0.836)"
+              />
             </FileUploader>
           </div>
           <button className="form__button" onClick={this.handleSendMessage}>
