@@ -10,8 +10,8 @@
   cursor: pointer;
   padding-right: 5px;
 }
-.header__favorite:hover {
-  color: #d6cd27;
+.header__favorite .icon:hover {
+  width: 20px;
 }
 
 .app__profile {

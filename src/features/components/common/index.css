@@ -1,4 +1,5 @@
 .custom__modal {
+  z-index: 999;
   position: fixed;
   top: 0;
   left: 0;
@@ -41,15 +42,6 @@
   display: flex;
   justify-content: flex-end;
   padding: 5px;
-}
-
-.display-none {
-  display: none;
-}
-
-.display-block {
-  z-index: 999;
-  display: block;
 }
 
 .show {

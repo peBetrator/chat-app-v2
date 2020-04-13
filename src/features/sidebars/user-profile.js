@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './sidebar.css';
+import './sidebars.css';
 
 import { connect } from 'react-redux';
 import { createDM, getProfilePicUrl } from '../../actions';

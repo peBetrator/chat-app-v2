@@ -60,7 +60,11 @@ class Room extends Component {
     return (
       <Link style={{ textDecoration: 'none' }} to="/">
         <li className={curRoom === title ? 'active' : ''}>
-          <div onClick={this.handleChannelChange} value={title}>
+          <div
+            className="room__title"
+            onClick={this.handleChannelChange}
+            value={title}
+          >
             {title}
           </div>
           <div onClick={this.preventBubbling}>

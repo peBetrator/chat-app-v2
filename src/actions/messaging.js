@@ -21,13 +21,16 @@ const sendMessageRequest = message => {
   };
 };
 
-export const getMessages = room => async dispatch => {
+export const getMessages = (room, uid) => async dispatch => {
   const messageRef = myFirebase.database().ref(`room-messages/${room}`);
   dispatch(fetchMessages(room));
 
   messageRef.limitToLast(10).on('value', message => {
-    if (message.exists())
-      dispatch(fetchMessagesSuccess(Object.values(message.val())));
+    if (message.exists()) {
+      updateLastMessageRead(room, uid).then(
+        dispatch(fetchMessagesSuccess(Object.values(message.val())))
+      );
+    }
   });
 };
 
@@ -42,9 +45,17 @@ export const sendMessage = data => dispatch => {
     timestamp: +new Date(),
   };
 
-  messageRef.push(payload, error => {
-    error ? console.log(error) : dispatch(sendMessageRequest(message));
-  });
+  try {
+    messageRef.push(payload, error => {
+      if (error) throw error;
+      updateLastMessageSent(payload, room).then(
+        dispatch(sendMessageRequest(message))
+      );
+    });
+  } catch (error) {
+    // TODO: dispatch error to store
+    console.log(error);
+  }
 };
 
 export const sendFileMessage = data => dispatch => {
@@ -80,6 +91,25 @@ export const sendFileMessage = data => dispatch => {
       });
     }
   );
+};
+
+export const updateLastMessageSent = (payload, room) => {
+  const lastMessageRef = myFirebase
+    .database()
+    .ref(`room-metadata/${room}/lastMessage`);
+
+  return lastMessageRef.set(payload);
+};
+
+const updateLastMessageRead = (room, uid) => {
+  const userLastReadRef = myFirebase
+    .database()
+    .ref(`users/${uid}/rooms/${room}/lastRead`);
+  const payload = {
+    timestamp: +new Date(),
+  };
+
+  return userLastReadRef.set(payload);
 };
 
 export const getProfilePicUrl = uid => {

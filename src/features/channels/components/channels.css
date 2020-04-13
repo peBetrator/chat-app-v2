@@ -20,6 +20,13 @@
   text-decoration: none;
 }
 
+.sidebar__room {
+  display: flex;
+}
+.sidebar__room .room {
+  width: 100%;
+}
+
 .section {
   font-weight: bold;
   color: black;
@@ -41,7 +48,16 @@
   display: inline-block;
 }
 
-p {
+.no__rooms {
   opacity: 0.5;
   font-size: 13px;
+}
+
+.notification {
+  position: absolute;
+}
+
+.room__title {
+  width: 100%;
+  padding-left: 10px;
 }

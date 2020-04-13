@@ -16,6 +16,8 @@
 .chat__profile {
   float: left;
   display: flex;
+  align-items: center;
+  font-size: 13px;
 }
 .chat__profile * {
   margin-right: 5px;
@@ -28,4 +30,9 @@
   float: right;
   position: relative;
   top: 5px;
+}
+
+.notification__message {
+  text-align: center;
+  color: #757575;
 }

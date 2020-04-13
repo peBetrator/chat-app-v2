@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { getRooms } from '../../../actions';
 
 import Room from './room';
+import Notification from './notification';
 import ProfileMenu from '../../profile-menu/profile-menu';
 
 class Channels extends Component {
@@ -17,12 +18,17 @@ class Channels extends Component {
   }
 
   renderSection = rooms => {
-    if (!rooms.length) return <p>No rooms to display...</p>;
+    if (!rooms.length) return <p className="no__rooms">No rooms to display...</p>;
 
     return (
       <>
         {rooms.map((room, i) => (
-          <Room roomData={room} key={i} />
+          <div className="sidebar__room" key={i}>
+            <div className="room">
+              <Room roomData={room} />
+            </div>
+            {room.room && <Notification roomData={room} />}
+          </div>
         ))}
       </>
     );

@@ -28,7 +28,7 @@ function Header(props) {
     <div className="app__header">
       {!!room && (
         <div className="header__favorite" onClick={handleRoomChange}>
-          <SVGIcon name="star" fill={fillColor} width={width} />
+          <SVGIcon className="icon" name="star" fill={fillColor} width="13px" />
         </div>
       )}
 

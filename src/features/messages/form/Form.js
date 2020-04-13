@@ -7,6 +7,9 @@ import { getMessages, sendMessage, sendFileMessage } from '../../../actions';
 import Message from '../../messages/components/message';
 import SVGIcon from '../../components/common/svg';
 import FileUploader from '../../components/common/file-uploader';
+import NotificationMessage from '../components/notification-message';
+
+import { formatBytes } from '../../utils';
 
 class Form extends Component {
   constructor(props) {
@@ -33,21 +36,14 @@ class Form extends Component {
   };
 
   handleSendMessage = () => {
-    const {
-      room,
-      userName,
-      email,
-      uid,
-      sendMessage,
-      sendFileMessage,
-    } = this.props;
+    const { room, userName, uid, sendMessage, sendFileMessage } = this.props;
     const { message, file, metadata } = this.state;
     if (!message && !file) {
       return;
     }
 
     const payload = {
-      user: userName || email,
+      user: userName,
       room,
       uid,
       message,
@@ -80,8 +76,8 @@ class Form extends Component {
   };
 
   listenMessages = () => {
-    const { getMessages, room } = this.props;
-    getMessages(room);
+    const { getMessages, room, uid } = this.props;
+    getMessages(room, uid);
   };
 
   renderMessages = messages => {
@@ -92,48 +88,60 @@ class Form extends Component {
         show = true;
         userUID = item.uid;
       }
-      return <Message key={index} message={item} showProfilePic={show} />;
+      return !item.notification ? (
+        <Message key={index} message={item} showProfilePic={show} />
+      ) : (
+        <NotificationMessage key={index} message={item} />
+      );
     });
   };
 
   render() {
-    const { messages, loaded } = this.props;
+    const { file } = this.state;
+    const { messages, loaded, room } = this.props;
     return (
       <div className="form">
         {loaded && this.renderMessages(messages)}
-        <div className="form__row">
-          <input
-            className="form__input"
-            type="text"
-            placeholder="Type message"
-            value={this.state.message}
-            onChange={this.handleChange}
-            onKeyPress={this.handleKeyPress}
-          />
-          <div className="form__add" title="Send file">
-            <FileUploader onChange={this.handleImageSelect}>
-              <SVGIcon
-                className="icon"
-                name="add"
-                width="25px"
-                fill="rgba(28, 18, 167, 0.836)"
-              />
-            </FileUploader>
+        {room && (
+          <div className="form__row">
+            <input
+              className="form__input"
+              type="text"
+              placeholder="Type message"
+              value={this.state.message}
+              onChange={this.handleChange}
+              onKeyPress={this.handleKeyPress}
+            />
+            <div className="form__add" title="Send file">
+              <FileUploader onChange={this.handleImageSelect}>
+                <SVGIcon
+                  className="icon"
+                  name="add"
+                  width="25px"
+                  fill="rgba(28, 18, 167, 0.836)"
+                />
+              </FileUploader>
+            </div>
+            <button className="form__button" onClick={this.handleSendMessage}>
+              send
+            </button>
           </div>
-          <button className="form__button" onClick={this.handleSendMessage}>
-            send
-          </button>
-        </div>
+        )}
+        {file && file.name && (
+          <div className="input__file">
+            '{file.name}' attached ({formatBytes(file.size)})
+          </div>
+        )}
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ auth, messaging, rooms }) => {
+const mapStateToProps = ({ auth: { user }, messaging, rooms }) => {
+  const displayName = user.displayName || user.email;
   return {
-    userName: auth.user.displayName,
-    email: auth.user.email,
-    uid: auth.user.uid,
+    userName: displayName,
+    uid: user.uid,
 
     room: rooms.room,
     messages: messaging.messages,

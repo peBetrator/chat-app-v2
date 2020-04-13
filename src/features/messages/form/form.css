@@ -24,6 +24,15 @@
   outline: 0;
 }
 
+.input__file {
+  position: relative;
+  font-size: 13px;
+  text-align: center;
+  top: -20px;
+  padding: 0 0 0 20px;
+  color: #a1a1a1;
+}
+
 .form__add {
   position: relative;
 }
@@ -52,6 +61,6 @@
 }
 
 .form__button:hover {
-  font-weight: bold;
-  color: black;
+  padding: 0 19px;
+  font-size: 25px;
 }
