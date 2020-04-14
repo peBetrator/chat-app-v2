@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './channels.css'
+import './channels.css';
 
 import { getRoomLastMessageTimestamp } from '../../../actions';
 
@@ -12,7 +12,9 @@ export default function Notification(props) {
     } = props;
     const userTimestamp = timestamp;
 
-    getRoomLastMessageTimestamp(room).then((roomData = {}) => {
+    getRoomLastMessageTimestamp(room).then((roomData) => {
+      if (!roomData) return;
+
       const { uid, message, timestamp } = roomData;
       const roomTimestamp = timestamp;
 
