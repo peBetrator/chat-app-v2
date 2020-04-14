@@ -16,7 +16,7 @@ function AddUserForm(props) {
     }),
     {
       data: '',
-      userAdded: false,
+      successMessage: '',
       error: '',
     }
   );
@@ -33,7 +33,7 @@ function AddUserForm(props) {
       if (searchResult && searchResult.foundUID && searchResult.foundUsername) {
         addUserToRoom(room, searchResult.foundUID).then(() => {
           userWasAddedBy(room, searchResult.foundUsername, displayName);
-          displaySuccessMessage();
+          displaySuccessMessage('User was added successfully!');
         });
       } else throw new Error('No user was found');
     } catch (error) {
@@ -42,14 +42,14 @@ function AddUserForm(props) {
     setInput({ data: '' });
   };
 
-  const displaySuccessMessage = () => {
+  const displaySuccessMessage = successMessage => {
     const { handleClose } = props;
 
-    setInput({ userAdded: true });
+    setInput({ successMessage, error: '' });
     setTimeout(() => {
       handleClose();
-      setInput({ userAdded: false });
-    }, 1000);
+      setInput({ successMessage: '' });
+    }, 2000);
   };
 
   const handleChangeUsername = event => {
@@ -62,14 +62,14 @@ function AddUserForm(props) {
     return re.test(String(email).toLowerCase());
   };
 
+  const { data, successMessage, error } = input;
   return (
     <div>
-      <div className="align__center">Add User</div>
       <div className="input-group">
         <input
           type="text"
-          className="form-control"
-          value={input.data}
+          className={`form-control ${successMessage && 'is-valid'} ${error && 'is-invalid'}`}
+          value={data}
           placeholder="UID or E-mail"
           onChange={handleChangeUsername}
         />
@@ -83,8 +83,11 @@ function AddUserForm(props) {
           </button>
         </span>
       </div>
-      {input.error && <p className="m-0 text-danger">{input.error}</p>}
-      {input.userAdded && <p className="m-0 text-success">User was found</p>}
+      {(successMessage || error) && (
+        <div className={`d-block ${error ? 'invalid-feedback' : 'valid-feedback'}`}>
+          {successMessage || error}
+        </div>
+      )}
     </div>
   );
 }

@@ -64,7 +64,7 @@ class ManageChannels extends Component {
         </div>
 
         {showModal && (
-          <Modal>
+          <Modal title="Add User">
             <AddUserForm room={room} handleClose={this.toggleModal} />
           </Modal>
         )}

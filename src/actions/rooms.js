@@ -149,28 +149,6 @@ export const leaveChat = (room, uid) => dispatch => {
   dispatch(leaveChatRequest(room));
 };
 
-export const createRoom = (room, uid) => dispatch => {
-  myFirebase
-    .database()
-    .ref(`/room-metadata/${room}`)
-    .update({ createdByUser: uid, room })
-    .then(
-      () => {
-        roomWasCreated(room);
-        myFirebase
-          .database()
-          .ref(`/users/${uid}/rooms/${room}`)
-          .update({ admin: true })
-          .then(() => {
-            addUserToRoom(room, uid).then(dispatch(getRooms(uid)));
-          });
-      },
-      error => {
-        dispatch(catchError(error));
-      }
-    );
-};
-
 export const createDM = (room, { uid, dmuid }) => dispatch => {
   myFirebase
     .database()
@@ -284,23 +262,27 @@ export const searchUserByUid = uid => {
   });
 };
 
-export const searchRoom = (room, uid) => dispatch => {
+export const createRoom = (room, uid) => {
+  const roomRef = myFirebase.database().ref(`/room-metadata/${room}`);
+  const userRef = myFirebase.database().ref(`/users/${uid}/rooms/${room}`);
+
+  return roomRef.set({ createdByUser: uid, room }).then(() => {
+    return userRef.update({ admin: true }).then(() => {
+      roomWasCreated(room);
+      return addUserToRoom(room, uid);
+    });
+  });
+};
+
+export const searchRoom = (room, uid) => {
   const roomRef = myFirebase.database().ref(`room-metadata/${room}/`);
 
-  roomRef.once('value').then(
-    roomSnap => {
-      if (roomSnap.exists()) {
-        addUserToRoom(room, uid);
-        dispatch(foundRoom());
-        setTimeout(() => {
-          dispatch(searchRoomRequest());
-        }, 1000);
-      }
-    },
-    error => {
-      dispatch(catchError(error));
+  return roomRef.once('value').then(roomSnapshot => {
+    if (roomSnapshot.exists()) {
+      return addUserToRoom(room, uid);
     }
-  );
+    throw new Error('No room was found');
+  });
 };
 
 export const changeRoom = newRoom => async dispatch => {

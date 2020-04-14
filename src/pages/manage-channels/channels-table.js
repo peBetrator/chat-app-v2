@@ -105,13 +105,15 @@ function ChannelsTable(props) {
         </tbody>
       </table>
 
-      {(modals.showChannel || modals.showUser) && (
-        <Modal>
-          {modals.showChannel ? (
-            <AddChannelForm handleClose={handleClose} />
-          ) : (
-            <AddUserForm room={curRoom} handleClose={handleClose} />
-          )}
+      {modals.showChannel && (
+        <Modal title="Add Room">
+          <AddChannelForm uid={uid} handleClose={handleClose} />
+        </Modal>
+      )}
+
+      {modals.showUser && (
+        <Modal title="Add User">
+          <AddUserForm room={curRoom} handleClose={handleClose} />
         </Modal>
       )}
 
