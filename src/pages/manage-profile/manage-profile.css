@@ -1,5 +1,4 @@
 .profile__table {
-  display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   margin-left: 200px;

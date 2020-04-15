@@ -1,38 +1,11 @@
-.app {
-  text-align: center;
-}
-
-.chat__app {
+.wrapper {
   display: flex;
+  align-items: stretch;
 }
 
-.chat__app > :first-child {
-  flex: 0.5 !important;
-}
-
-.chat__app > * {
-  flex: 3;
-}
-
-.chat__main {
+.content {
   display: flex;
-}
-
-.chat__main > :first-child {
-  flex: 3 !important;
-}
-
-.chat__main > * {
-  flex: 1;
-}
-
-.app__logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.app__intro {
-  font-size: large;
+  width: 100%;
 }
 
 footer {
@@ -40,17 +13,4 @@ footer {
   width: 100%;
   bottom: 0;
   z-index: -1;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-ul {
-  list-style-type: none;
 }

@@ -7,7 +7,6 @@ import { exitRoom, logoutUser } from '../../actions';
 import { Menu, MenuItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 
-import ChangeUserName from './change-user-name';
 import SVGIcon from '../components/common/svg';
 import Modal from '../components/common/modal';
 import AddChannelForm from '../../pages/manage-channels/add-channel';
@@ -21,7 +20,6 @@ function ProfileMenu(props) {
     }),
     {
       anchorEl: null,
-      input: false,
       addRoomModal: false,
       error: '',
     }
@@ -36,11 +34,6 @@ function ProfileMenu(props) {
     setProfileMenu({ anchorEl: null });
   };
 
-  const handleChangeUserName = () => {
-    setProfileMenu({ input: true });
-    handleClose();
-  };
-
   const toogleModal = () => {
     setProfileMenu({ addRoomModal: !profileMenu.addRoomModal });
   };
@@ -51,20 +44,17 @@ function ProfileMenu(props) {
   };
 
   return (
-    <div>
-      {profileMenu.input ? (
-        <ChangeUserName
-          name={userName}
-          onChange={() => {
-            setProfileMenu({ input: false });
-          }}
+    <div className="sidebar-header">
+      <div className="app__profile" onClick={handleClick}>
+        {userName}
+        <SVGIcon
+          className="profile__icon"
+          name="profile"
+          width={20}
+          fill="#fff"
         />
-      ) : (
-        <div className="app__profile" onClick={handleClick}>
-          {userName}
-          <SVGIcon className="profile__icon" name="profile" width={20} />
-        </div>
-      )}
+      </div>
+
       <Menu
         id="simple-menu"
         anchorEl={profileMenu.anchorEl}
@@ -72,7 +62,6 @@ function ProfileMenu(props) {
         open={Boolean(profileMenu.anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleChangeUserName}>Change display name</MenuItem>
         <MenuItem component={Link} to={'/profile'} onClick={handleClose}>
           My profile
         </MenuItem>
@@ -80,13 +69,7 @@ function ProfileMenu(props) {
         <MenuItem component={Link} to={'/channels'} onClick={handleClose}>
           My channels
         </MenuItem>
-        <MenuItem
-          onClick={e => {
-            logoutUser();
-          }}
-        >
-          Logout
-        </MenuItem>
+        <MenuItem onClick={logoutUser}>Logout</MenuItem>
       </Menu>
 
       {profileMenu.addRoomModal && (

@@ -35,14 +35,18 @@ function Members(props) {
     setMemberData({ selectedMember: index });
   };
 
+  if (!room) return null;
+
   return (
-    <div className="right">
-      {room && <h3>Chat Members</h3>}
-      {room && !loadedMembers ? (
-        <div>Loading members</div>
+    <nav id="sidenav">
+      <div className="sidenav__header">
+        <h3>Chat Members</h3>
+      </div>
+      {!loadedMembers ? (
+        <h2>Loading members</h2>
       ) : (
-        members.map(({ uid, email, userName }, i) => (
-          <div key={i}>
+        <ul className="list-unstyled">
+          {members.map(({ uid, email, userName }, i) => (
             <MemberData
               // TODO extract members data to redux store
               isSelected={memberData.selectedMember === i}
@@ -52,10 +56,10 @@ function Members(props) {
               displayName={userName || email}
               uid={uid}
             />
-          </div>
-        ))
+          ))}
+        </ul>
       )}
-    </div>
+    </nav>
   );
 }
 

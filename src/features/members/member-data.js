@@ -21,41 +21,42 @@ function MemberData(props) {
     }),
     initSidebar
   );
-  const { uid, displayName, id, isSelected, room, view, select } = props;
+  const { uid, myUID, displayName, id, room, view } = props;
+
+  const handleSelect = () => {
+    const { isSelected, select } = props;
+    isSelected ? select(-1) : select(id);
+  };
 
   const handleClose = () => {
     setSidebar(initSidebar);
   };
 
   return (
-    <div className="members">
-      <div
-        onClick={() => {
-          isSelected ? select(-1) : select(id);
-        }}
-      >
+    <li key={id} onClick={handleSelect}>
+      <a href={'#' + uid} data-toggle="collapse" aria-expanded="false">
         {displayName}
-      </div>
-      <div className={!isSelected ? 'hide' : 'display'}>
-        <ul>
+        {uid === myUID && ' (You)'}
+      </a>
+      <ul id={uid} className="collapse list-unstyled">
+        <li
+          onClick={() => {
+            handleClose();
+            setSidebar({ showUserProfile: true });
+          }}
+        >
+          View profile
+        </li>
+        {view && (
           <li
-            onClick={() => {
-              handleClose();
-              setSidebar({ showUserProfile: true });
-            }}
-          >
-            View profile
-          </li>
-          <li
-            className={!view ? 'hide' : ''}
             onClick={() => {
               setSidebar({ confirmation: true });
             }}
           >
             Remove
           </li>
-        </ul>
-      </div>
+        )}
+      </ul>
 
       {sidebar.showUserProfile && (
         <Sidebar>
@@ -67,12 +68,13 @@ function MemberData(props) {
           <Confirmation room={room} handleClose={handleClose} />
         </Modal>
       )}
-    </div>
+    </li>
   );
 }
 
-const mapStateToProps = ({ rooms }) => {
+const mapStateToProps = ({ auth, rooms }) => {
   return {
+    myUID: auth.user.uid,
     room: rooms.room,
   };
 };

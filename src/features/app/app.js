@@ -11,9 +11,9 @@ function App() {
   return (
     <div>
       <Header />
-      <div className="chat__app">
+      <div className="wrapper">
         <Channels />
-        <div className="chat__main" id="content">
+        <div className="content" id="content">
           {/* div for mounting sidebars */}
           <MainChat />
         </div>

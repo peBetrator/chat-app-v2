@@ -1,18 +1,22 @@
 .form {
-  display: flex;
-  position: relative;
-  flex-direction: column;
   flex: 1;
-  padding: 20px;
-  /* margin: 0 auto; */
+  position: relative;
   top: 15px;
+  padding: 20px;
+}
+
+.form__messages {
+  height: 88vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .form__row {
   display: flex;
   flex-wrap: nowrap;
   width: 100%;
-  padding: 20px;
+  padding: 10px;
 }
 
 .form__input {

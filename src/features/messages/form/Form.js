@@ -49,12 +49,14 @@ class Form extends Component {
       message,
     };
 
-    sendMessage(payload);
+    if (message) {
+      sendMessage(payload);
+    }
 
     if (file) {
       const { message, ...newObject } = payload;
       Object.assign(newObject, { file, metadata });
-      sendFileMessage(payload);
+      sendFileMessage(newObject);
     }
 
     this.setState({
@@ -101,7 +103,9 @@ class Form extends Component {
     const { messages, loaded, room } = this.props;
     return (
       <div className="form">
-        {loaded && this.renderMessages(messages)}
+        {loaded && (
+          <div className="form__messages">{this.renderMessages(messages)}</div>
+        )}
         {room && (
           <div className="form__row">
             <input

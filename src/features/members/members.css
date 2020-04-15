@@ -15,3 +15,53 @@
 .members {
   cursor: pointer;
 }
+
+.member__data {
+  padding: 10px;
+}
+
+#sidenav {
+  min-width: 250px;
+  max-width: 250px;
+  min-height: 100vh;
+  background: #7386d5;
+  color: #fff;
+  transition: all 0.3s;
+  overflow: auto;
+}
+
+#sidenav .sidenav__header {
+  padding: 12px;
+  background: #6d7fcc;
+}
+
+#sidenav ul li a {
+  padding: 10px;
+  font-size: 1.1em;
+  display: block;
+  color: #fff;
+}
+
+#sidenav ul li ul li {
+  text-align: center;
+  cursor: pointer;
+}
+
+#sidenav ul li a:hover {
+  color: #7386d5;
+  background: #fff;
+  text-decoration: none;
+}
+
+/* .sidenav.active {
+  margin-right  : -250px;
+} */
+
+@media (max-width: 768px) {
+  #sidenav {
+    margin-right: -250px;
+  }
+  #sidenav.active {
+    margin-right: 0;
+  }
+}

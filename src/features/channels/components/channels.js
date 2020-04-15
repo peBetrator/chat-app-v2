@@ -17,20 +17,38 @@ class Channels extends Component {
     }
   }
 
-  renderSection = rooms => {
-    if (!rooms.length) return <p className="no__rooms">No rooms to display...</p>;
+  renderSection = (rooms, title, link) => {
+    const href = link || `${title}Submenu`;
+    if (!rooms.length)
+      return (
+        <li>
+          <a
+            href={'#' + href}
+            data-toggle="collapse"
+            className="dropdown-toggle"
+          >
+            {title}
+          </a>
+          <ul className="collapse list-unstyled show" id={href}>
+            <p className="no__rooms">No rooms to display...</p>
+          </ul>
+        </li>
+      );
 
     return (
-      <>
-        {rooms.map((room, i) => (
-          <div className="sidebar__room" key={i}>
-            <div className="room">
+      <li>
+        <a href={'#' + href} data-toggle="collapse" className="dropdown-toggle">
+          {title}
+        </a>
+        <ul className="collapse list-unstyled show" id={href}>
+          {rooms.map((room, i) => (
+            <li key={i}>
               <Room roomData={room} />
-            </div>
-            {room.room && <Notification roomData={room} />}
-          </div>
-        ))}
-      </>
+              {room.room && <Notification roomData={room} />}
+            </li>
+          ))}
+        </ul>
+      </li>
     );
   };
 
@@ -50,41 +68,31 @@ class Channels extends Component {
 
     if (noRooms)
       return (
-        <ul className="sidebar">
+        <nav id="sidebar">
           <ProfileMenu />
           <h2>There are no rooms to display, please create one</h2>
-        </ul>
+        </nav>
       );
 
     if (!loaded)
       return (
-        <ul className="sidebar">
+        <nav id="sidebar">
           <ProfileMenu />
           <h2>Loading rooms...</h2>
-        </ul>
+        </nav>
       );
 
     return (
-      <ul className="sidebar">
+      <nav id="sidebar">
         <ProfileMenu />
-        {!!favoriteRooms.length && (
-          <div>
-            <div className="section">Favorite</div>
-            {this.renderSection(favoriteRooms)}
-          </div>
-        )}
-        <div className="section">Channels</div>
-        {this.renderSection(rooms)}
-        <div className="section">Private Groups</div>
-        {this.renderSection(privateRooms)}
-
-        {!!dms.length && (
-          <div>
-            <div className="section">Direct Messages</div>
-            {this.renderSection(dms)}
-          </div>
-        )}
-      </ul>
+        <ul className="list-unstyled">
+          {!!favoriteRooms.length &&
+            this.renderSection(favoriteRooms, 'Favorites')}
+          {this.renderSection(rooms, 'Channels')}
+          {this.renderSection(privateRooms, 'Private Groups', 'privates')}
+          {!!dms.length && this.renderSection(dms, 'DMs')}
+        </ul>
+      </nav>
     );
   }
 }

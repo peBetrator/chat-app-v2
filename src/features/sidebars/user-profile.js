@@ -36,9 +36,9 @@ function UserProfile(props) {
   return (
     <div>
       <ProfileImage imageURI={profileImg} width="100px" height="100px" />
-      <div className="dm" onClick={handleDM}>
+      <button className="dm" onClick={handleDM}>
         direct message
-      </div>
+      </button>
       <UserRights uid={uid} />
     </div>
   );

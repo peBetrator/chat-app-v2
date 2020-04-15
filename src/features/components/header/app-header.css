@@ -17,7 +17,7 @@
 .app__profile {
   display: flex;
   justify-content: space-between;
-  color: black;
+  color: #fff;
   cursor: pointer;
   opacity: 0.8;
   outline: 0;

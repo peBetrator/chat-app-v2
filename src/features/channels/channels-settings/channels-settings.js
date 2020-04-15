@@ -56,7 +56,7 @@ class ChannelsSetting extends Component {
       // TODO create a generic component for Menu dropdown(used in profile-menu.js; channels-setting.js; member-list.js)
       <div>
         <div onClick={this.handleOpenMenu}>
-          <SVGIcon name="show_more_dots" width={13} />
+          <SVGIcon name="show_more_dots" width={13} fill="#7386d5" />
         </div>
         <Menu
           id="simple-menu"
