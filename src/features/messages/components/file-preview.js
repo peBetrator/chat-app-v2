@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './message.css';
 
 import defaultFile from '../../../assets/imgs/no-img.jpg';
 
@@ -12,7 +13,8 @@ function FilePreview(props) {
   } = props;
 
   useEffect(() => {
-    if (contentType === 'image/jpeg') {
+    const imgTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (contentType && imgTypes.includes(contentType)) {
       setImgUrl(url);
     } else {
       setImgUrl(defaultFile);
@@ -22,7 +24,7 @@ function FilePreview(props) {
   return (
     <div>
       <a href={url} download="file_name" target="_blank">
-        <img src={imgUrl} width="200px" height="200px" />
+        <img className="image__preview" src={imgUrl} />
       </a>
     </div>
   );

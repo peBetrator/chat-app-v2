@@ -99,9 +99,7 @@ export const registerUser = (email, password) => dispatch => {
         .set({
           email: email,
         })
-        .then(() => {
-          addUserToRoom('general', user.uid);
-        });
+        .then(addUserToRoom('general', user.uid));
     })
     .catch(error => {
       dispatch(signUpError(error));
@@ -134,7 +132,7 @@ export const signInWithGoogle = () => dispatch => {
       dispatch(receiveLogin(user.user));
     })
     .catch(error => {
-      dispatch(loginError());
+      dispatch(loginError(error));
       dispatch(signUpError(error));
     });
 };

@@ -36,3 +36,9 @@
   text-align: center;
   color: #757575;
 }
+
+.image__preview {
+  object-fit: cover;
+  width: 200px;
+  height: 200px;
+}

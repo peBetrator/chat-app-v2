@@ -25,7 +25,7 @@ export const getMessages = (room, uid) => async dispatch => {
   const messageRef = myFirebase.database().ref(`room-messages/${room}`);
   dispatch(fetchMessages(room));
 
-  messageRef.limitToLast(10).on('value', message => {
+  messageRef.limitToLast(20).on('value', message => {
     if (message.exists()) {
       updateLastMessageRead(room, uid).then(
         dispatch(fetchMessagesSuccess(Object.values(message.val())))
@@ -59,7 +59,7 @@ export const sendMessage = data => dispatch => {
 };
 
 export const sendFileMessage = data => dispatch => {
-  const { user, room, uid, message, file } = data;
+  const { user, room, uid, file } = data;
 
   const fileUrl = `chat-files/${room}/${file.name}`;
   const storageRef = myFirebase.storage().ref(fileUrl);
@@ -80,13 +80,12 @@ export const sendFileMessage = data => dispatch => {
         const payload = {
           uid,
           name: user,
-          message,
           timestamp: +new Date(),
           file: { url, metadata },
         };
 
         messageRef.push(payload, error => {
-          error ? console.log(error) : dispatch(sendMessageRequest(message));
+          error ? console.log(error) : dispatch(getMessages(room, uid));
         });
       });
     }

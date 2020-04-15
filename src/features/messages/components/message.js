@@ -7,6 +7,8 @@ import { getProfilePicUrl } from '../../../actions';
 import ProfileImage from '../../components/common/profile-image';
 import FilePreview from './file-preview';
 
+import { formatTime } from '../../utils';
+
 class Message extends Component {
   state = {
     isCurrentUser: true,
@@ -36,7 +38,7 @@ class Message extends Component {
       showProfilePic,
       message: { name, message, timestamp, file },
     } = this.props;
-    const time = new Date(timestamp).toLocaleTimeString();
+    const time = formatTime(timestamp);
 
     return (
       <>

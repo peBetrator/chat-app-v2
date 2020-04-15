@@ -9,3 +9,20 @@ export const formatBytes = (bytes, decimals = 2) => {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
+
+export const formatTime = timestamp => {
+  const date = new Date(timestamp);
+  return (
+    ('00' + (date.getMonth() + 1)).slice(-2) +
+    '/' +
+    ('00' + date.getDate()).slice(-2) +
+    '/' +
+    date.getFullYear() +
+    ' ' +
+    ('00' + date.getHours()).slice(-2) +
+    ':' +
+    ('00' + date.getMinutes()).slice(-2) +
+    ':' +
+    ('00' + date.getSeconds()).slice(-2)
+  );
+};
