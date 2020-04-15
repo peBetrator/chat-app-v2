@@ -1,26 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './app-header.css';
+import { connect } from 'react-redux';
+
+import { makeRoomFavorite, getDmRoomTitle } from '../../../actions';
+import { formatDMTitle } from '../../utils';
 
 import SVGIcon from '../common/svg';
-import { connect } from 'react-redux';
-import { makeRoomFavorite } from '../../../actions';
 
 function Header(props) {
-  const [width, setWidth] = React.useState(13);
   const { isAuthenticated, uid, room, favoriteRooms, makeRoomFavorite } = props;
   const fillColor = favoriteRooms.map(room => room.room).includes(room)
     ? '#d6cd27'
     : '#000';
+  const [roomTitle, setRoomTitle] = useState('');
 
   useEffect(() => {
-    setWidth(13);
-  }, [favoriteRooms]);
+    getTitle();
+  }, [room]);
 
-  const handleRoomChange = () => {
-    setWidth(15);
-    makeRoomFavorite(room, uid);
+  const getTitle = () => {
+    if (room.includes(uid)) {
+      const uidToFind = formatDMTitle(room, uid);
+      getDmRoomTitle(uidToFind).then(title => setRoomTitle(title));
+    }
+    setRoomTitle(room);
   };
 
+  const handleRoomChange = () => {
+    makeRoomFavorite(room, uid);
+  };
   // TODO extract auth state from header component
   if (!isAuthenticated) return null;
 
@@ -31,8 +39,7 @@ function Header(props) {
           <SVGIcon className="icon" name="star" fill={fillColor} width="13px" />
         </div>
       )}
-
-      {room}
+      {roomTitle}
     </div>
   );
 }

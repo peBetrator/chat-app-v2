@@ -46,11 +46,15 @@ class Room extends Component {
   }
 
   handleChannelChange(event) {
-    event.preventDefault();
-    const { handleRoomChange } = this.props;
-    const room = event.currentTarget.getAttribute('value');
+    // event.preventDefault();
+    const {
+      roomData: { room, DM },
+      handleRoomChange,
+    } = this.props;
+    // const room =  event.currentTarget.getAttribute('value');
+    const currentRoom = DM ? room : event.currentTarget.getAttribute('value');
 
-    handleRoomChange(room);
+    handleRoomChange(currentRoom);
   }
 
   render() {
@@ -59,7 +63,7 @@ class Room extends Component {
 
     return (
       <Link style={{ textDecoration: 'none' }} to="/">
-        <li className={curRoom === title ? 'active' : ''}>
+        <div className={`sidebar__room ${curRoom === title ? 'active' : ''}`}>
           <div
             className="room__title"
             onClick={this.handleChannelChange}
@@ -70,7 +74,7 @@ class Room extends Component {
           <div onClick={this.preventBubbling}>
             <ChannelsSetting room={title} favorite={favorite} />
           </div>
-        </li>
+        </div>
       </Link>
     );
   }
